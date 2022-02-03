@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "utils.hpp" // ft::swap
 
 namespace ft
 {
@@ -8,7 +9,7 @@ namespace ft
 	class vector
 	{
 		public:
-			//	-- member types
+			//	-- MEMBER TYPES
 
 			typedef T 										value_type;
 			typedef Allocator 								allocator_type;
@@ -145,21 +146,21 @@ namespace ft
 
 			// -- ITERATORS
 
-			// iterator begin();
+			iterator begin();
 
-			// const_iterator begin() const;
+			const_iterator begin() const;
 
-			// iterator end();
+			iterator end();
 
-			// const_iterator end() const;
+			const_iterator end() const;
 
-			// reverse_iterator rbegin();
+			reverse_iterator rbegin();
 
-			// const_reverse_iterator rbegin() const;
+			const_reverse_iterator rbegin() const;
 
-			// reverse_iterator rend();
+			reverse_iterator rend();
 
-			// const_reverse_iterator rend() const;
+			const_reverse_iterator rend() const;
 
 
 			// -- CAPACITY
@@ -212,6 +213,65 @@ namespace ft
 				vsize = 0;
 			}
 
+			iterator insert( iterator pos, const T& value ); //1
+
+			void insert( iterator pos, size_type count, const T& value ); //3
+
+			template< class InputIt >
+			void insert( iterator pos, InputIt first, InputIt last ); //4
+
+			iterator erase( iterator pos );
+
+			iterator erase( iterator first, iterator last );
+
+			void push_back( const T& value )
+			{
+				if (csize == vsize) reserve(2 * csize);
+				alloc.construct(array + vsize, value);
+			}
+
+			void pop_back()
+			{
+				if (vsize == 0) return;
+				vsize--;
+				alloc.destroy(array + vsize);
+			}
+
+			// просмотреть еще раз обязательно пишу поздно
+			void resize( size_type count, T value = T() )
+			{
+				if (vsize > count)
+				{
+					for (size_type i = count; i < vsize; ++i)
+						alloc.destroy(array + i);
+					vsize = count;
+					return;
+				}
+				if (csize >= count)
+				{
+					for (size_type i = vsize; i < count; ++i)
+						alloc.construct(array + i, value);
+					vsize = count;
+					return;
+				}
+
+				if (csize < count) {
+					if (2 * csize < count) reserve(count);
+					else reserve(2 * csize);
+
+					for (size_type i = vsize; i < count; ++i)
+						alloc.constrcut(array + i, value);
+					vsize = count;
+				}
+			}
+
+			void swap( vector& other )
+			{
+				ft::swap(array, other.array);
+				ft::swap(alloc, other.alloc);
+				ft::swap(vsize, other.vsize);
+				ft::swap(csize, other.csize);
+			}
 
 			// -- EXCEPTIONS
 
@@ -239,4 +299,45 @@ namespace ft
 			size_type			vsize; // vector size
 			size_type			csize; // size alocated memory		
 	};
+
+	template< class T, class Alloc >
+	bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+	{
+		return (lhs.size() == rhs.size() 
+			&& std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
+
+	template< class T, class Alloc >
+	bool operator!=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+	{
+		return !(lhs.size() == rhs.size() 
+			&& std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
+
+	template< class T, class Alloc >
+	bool operator<( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+	{
+		return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
+
+	template< class T, class Alloc >
+	bool operator<=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+	{
+		return !std::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end());
+	}
+
+	template< class T, class Alloc >
+	bool operator>( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+	{
+		return std::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end());
+	}
+
+	template< class T, class Alloc >
+	bool operator>=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+	{
+		return !std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
+
+	template< class T, class Alloc >
+	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) { lhs.swap(rhs); }
 }
