@@ -1,7 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include "utils.hpp" // ft::swap
+#include "utils.hpp" // ft::swap 
+#include "random_acces_iterator.hpp" // iterator
+#include <iterator> // std::reverse_iterator
+#include <vector> // iterator from vector
 
 namespace ft
 {
@@ -11,26 +14,28 @@ namespace ft
 		public:
 			//	-- MEMBER TYPES
 
-			typedef T 										value_type;
-			typedef Allocator 								allocator_type;
-			typedef std::size_t 							size_type;
-			typedef std::ptrdiff_t 							difference_type;
-			typedef value_type& 							reference;
-			typedef const value_type& 						const_reference;
-			typedef typename Allocator::pointer 			pointer;
-			typedef typename Allocator::const_pointer 		const_pointer;
-			//typedef 										iterator;
-			//typedef 										const_iterator;
-			//typedef std::reverse_iterator<iterator> 		reverse_iterator;
-			//typedef std::reverse_iterator<const_iterator> 	const_reverse_iterator;
+			typedef T 											value_type;
+			typedef Allocator 									allocator_type;
+			typedef std::size_t 								size_type;
+			typedef std::ptrdiff_t 								difference_type;
+			typedef value_type& 								reference;
+			typedef const value_type& 							const_reference;
+			typedef typename allocator_type::pointer 			pointer;
+			typedef typename allocator_type::const_pointer 		const_pointer;
+			// typedef ft::RandomAccessIterator<value_type> 		iterator;
+			// typedef ft::RandomAccessIterator<value_type,true>	const_iterator;
+			typedef typename std::vector<T>::iterator			iterator;
+			typedef typename std::vector<T>::const_iterator		const_iterator;
+			typedef std::reverse_iterator<iterator> 			reverse_iterator;
+			typedef std::reverse_iterator<const_iterator>		const_reverse_iterator;
 
 
 			//	-- CONSTRUCTORS
 
 			//vector();
 
-			explicit vector(const allocator_type &alloc = allocator_type())
-				: alloc(alloc), array(0), vsize(0), csize(0) {}
+			explicit vector(const allocator_type &_alloc = allocator_type())
+				: alloc(_alloc), array(0), vsize(0), csize(0) {}
 
 			explicit vector(size_type count,
 							const value_type &value = value_type(),
@@ -55,7 +60,23 @@ namespace ft
 
 			template <class InputIt>
 			vector(InputIt first, InputIt last,
-				const allocator_type &alloc = allocator_type());
+				const allocator_type &_alloc = allocator_type()) : alloc(_alloc)
+			{
+				vsize = std::distance(first, last);
+				csize = vsize;
+				try
+				{
+					array = alloc.allocate(csize);
+				}
+				catch(const std::exception& e)
+				{
+					this->~vector();
+					throw vector::MemoryException();
+				}
+				for (size_type i = 0; first != last; ++first, ++i) {
+					alloc.construct(array + i, *first);
+				}
+			}
 
 			vector( const vector& other ) : vsize(0), csize(0), alloc(other.alloc) 
 			{
@@ -105,10 +126,26 @@ namespace ft
 
 			// -- MEMBER FUNCTIONS
 
-			void assign( size_type count, const T& value );
+			void assign( size_type count, const T& value )
+			{
+				this->clear();
+				if (csize < count) reserve(count);
+
+				for (size_type i = 0; i < count; i++)
+					alloc.construct(array + i, value);
+				vsize = count;
+			}
 
 			template< class InputIt >
-			void assign( InputIt first, InputIt last );
+			void assign( InputIt first, InputIt last )
+			{
+				vsize = std::distance(first, last);
+				if (csize < vsize) reserve(vsize);
+
+				for (size_type i = 0; first != last; ++first, ++i) {
+					alloc.construct(array + i, *first);
+				}
+			}
 
 			allocator_type get_allocator() const { return alloc; }
 
@@ -142,25 +179,23 @@ namespace ft
 
 			const T* data() const { return array; }
 
-			/* ...... */
-
 			// -- ITERATORS
 
-			iterator begin();
+			iterator begin() { return iterator(array); }
 
-			const_iterator begin() const;
+			const_iterator begin() const {return const_iterator(array); }
 
-			iterator end();
+			iterator end() { return iterator(array + vsize); }
 
-			const_iterator end() const;
+			const_iterator end() const { return const_iterator(array + vsize); }
 
-			reverse_iterator rbegin();
+			reverse_iterator rbegin() { return reverse_iterator(array); }
 
-			const_reverse_iterator rbegin() const;
+			const_reverse_iterator rbegin() const { return const_reverse_iterator(array); }
 
-			reverse_iterator rend();
+			reverse_iterator rend() { return reverse_iterator(array + vsize); }
 
-			const_reverse_iterator rend() const;
+			const_reverse_iterator rend() const { return const_reverse_iterator(array + vsize); }
 
 
 			// -- CAPACITY
