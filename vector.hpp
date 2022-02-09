@@ -2,9 +2,10 @@
 
 #include <iostream>
 #include "utils.hpp" // ft::swap 
-#include "random_acces_iterator.hpp" // iterator
-#include <iterator> // std::reverse_iterator
+//#include "random_acces_iterator.hpp" // iterator
+#include <iterator> // std::reverse_iterator, std::distance
 #include <vector> // iterator from vector
+#include <algorithm> // std::lexicographical_compare, std::copy_backward
 
 namespace ft
 {
@@ -62,7 +63,8 @@ namespace ft
 			vector(InputIt first, InputIt last,
 				const allocator_type &_alloc = allocator_type()) : alloc(_alloc)
 			{
-				vsize = std::distance(first, last);
+				//vsize = std::distance(first, last);
+				vsize = last - first;
 				csize = vsize;
 				try
 				{
@@ -73,8 +75,9 @@ namespace ft
 					this->~vector();
 					throw vector::MemoryException();
 				}
-				for (size_type i = 0; first != last; ++first, ++i) {
+				for (size_type i = 0; i < vsize; ++i) {
 					alloc.construct(array + i, *first);
+					first++;
 				}
 			}
 
@@ -139,7 +142,8 @@ namespace ft
 			template< class InputIt >
 			void assign( InputIt first, InputIt last )
 			{
-				vsize = std::distance(first, last);
+				//vsize = std::distance(first, last);
+				vsize = last - first;
 				if (csize < vsize) reserve(vsize);
 
 				for (size_type i = 0; first != last; ++first, ++i) {
@@ -189,14 +193,27 @@ namespace ft
 
 			const_iterator end() const { return const_iterator(array + vsize); }
 
-			reverse_iterator rbegin() { return reverse_iterator(array); }
+			// ------------------------------------------
+			// ------------------------------------------
 
-			const_reverse_iterator rbegin() const { return const_reverse_iterator(array); }
+			reverse_iterator rbegin() { 
+				return reverse_iterator(array + vsize - (vsize == 0 ? 0 : 1)); 
+			}
 
-			reverse_iterator rend() { return reverse_iterator(array + vsize); }
+			const_reverse_iterator rbegin() const { 
+				return const_reverse_iterator(array + vsize - (vsize == 0 ? 0 : 1)); 
+			}
 
-			const_reverse_iterator rend() const { return const_reverse_iterator(array + vsize); }
+			reverse_iterator rend() { 
+				return reverse_iterator(array - (vsize == 0 ? 0 : 1)); 
+			}
 
+			const_reverse_iterator rend() const { 
+				return const_reverse_iterator(array - (vsize == 0 ? 0 : 1)); 
+			}
+
+			// ------------------------------------------
+			// ------------------------------------------
 
 			// -- CAPACITY
 
@@ -248,16 +265,64 @@ namespace ft
 				vsize = 0;
 			}
 
-			iterator insert( iterator pos, const T& value ); //1
+			// ------------------------------------------
+			// ------------------------------------------
 
-			void insert( iterator pos, size_type count, const T& value ); //3
+			iterator insert( iterator pos, const T& value ) { //1
+				if (pos == this->end()) {
+					this->push_back(value);
+					return this->end();
+				}
+				if (vsize == csize) reserve (2 * csize);
+
+				std::copy_backward(pos, this->end(), this->end());
+				alloc.construct(pos, value);
+				vsize++;
+				return pos;
+			}
+
+			void insert( iterator pos, size_type count, const T& value ) { //3
+				if (2 * csize < count + vsize) reserve(count + vsize);
+				else reserve(2 * csize);
+				
+				std::copy_backward(pos, this->end(), this->end() + count - 1);
+				vsize += count;
+				for (iterator it = pos; count > 0; --count, ++it)
+					alloc.construct(it, value);
+			}
 
 			template< class InputIt >
-			void insert( iterator pos, InputIt first, InputIt last ); //4
+			void insert( iterator pos, InputIt first, InputIt last ) {//4
+				//const size_type count = std::distance(first, last);
+				const size_type count = last - first;
+				if (2 * csize < count + vsize) reserve(count + vsize);
+				else reserve(2 * csize);
 
-			iterator erase( iterator pos );
+				std::copy_backward(pos, this->end(), this->end() + count - 1);
+				vsize+=count;
+				std::copy(first, last, pos);
+			}
 
-			iterator erase( iterator first, iterator last );
+			iterator erase( iterator pos ) {
+				array.destroy(pos);
+				vsize--;
+				
+				if (pos < this->end())
+					std::copy(pos + 1, this->end(), pos); // copy_back
+				return pos + 1;
+			}
+
+			// iterator erase( iterator first, iterator last ){
+			// 	vsize -= std::distance(first, last);
+			// 	for (iterator it = first; it != last; ++it)
+			// 		array.destoy(it);
+
+			// 	if (last < this->end())
+			// 		std::copy(last + 1, this->end(), first); //copy_back
+			// }
+
+			// ------------------------------------------
+			// ------------------------------------------
 
 			void push_back( const T& value )
 			{
