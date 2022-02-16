@@ -5,7 +5,7 @@
 
 void print_container(const ft::vector<int>& c) 
 {
-    for (int i; i < c.size(); i++) {
+    for (size_t i = 0; i < c.size(); i++) {
         std::cout << c[i] << " ";
     }
     std::cout << "\nsize-> " << c.size() << "\n";

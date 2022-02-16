@@ -6,7 +6,7 @@
 void print(int id, const ft::vector<int>& container)
 {
     std::cout << id << ". ";
-    for (int i; i < container.size(); i++) {
+    for (size_t i = 0; i < container.size(); i++) {
         std::cout << container[i] << " ";
     }
     std::cout << '\n';
@@ -32,7 +32,7 @@ int main ()
     it = c1.begin();
  
     ft::vector<int> c2(2, 400);
-    c1.insert(std::next(it, 2), c2.begin(), c2.end());
+    c1.insert(it + 2, c2.begin(), c2.end());
     print(4, c1);
  
     int arr[] = { 501,502,503 };

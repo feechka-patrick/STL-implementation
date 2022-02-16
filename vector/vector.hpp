@@ -6,7 +6,6 @@
 #include <iterator> // std::reverse_iterator, std::distance
 #include <vector> // iterator from vector
 #include <algorithm> // std::lexicographical_compare, std::copy_backward
-#include <type_traits>
 #include <limits> // std::numeric_limits
 
 namespace ft
@@ -64,9 +63,10 @@ namespace ft
 				}
 			}
 
-			template <class InputIt, typename = typename ft::enable_if<!std::numeric_limits<InputIt>::is_integer>::type >
+			template <class InputIt>
 			vector(InputIt first, InputIt last,
-				const allocator_type &_alloc = allocator_type()) : alloc(_alloc)
+				const allocator_type &_alloc = allocator_type(),
+				typename ft::enable_if<!std::numeric_limits<InputIt>::is_integer>::type* = 0) : alloc(_alloc)
 			{
 				//vsize = std::distance(first, last);
 				vsize = last - first;
@@ -301,8 +301,9 @@ namespace ft
 					alloc.construct(array + i, value);
 			}
 
-			template< class InputIt, typename = typename ft::enable_if<!std::numeric_limits<InputIt>::is_integer>::type >
-			void insert( iterator pos, InputIt first, InputIt last ) {//4
+			template< class InputIt>
+			void insert( iterator pos, InputIt first, InputIt last, 
+				typename ft::enable_if<!std::numeric_limits<InputIt>::is_integer>::type* = 0) {//4
 				size_type dist = pos - this->begin();
 
 				const size_type count = last - first;

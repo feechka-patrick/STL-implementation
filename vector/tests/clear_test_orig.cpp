@@ -1,25 +1,32 @@
 #include <iostream>
 #include <iterator>
 #include <vector>
-#include <algorithm>
 
-
+void print_container(const std::vector<int>& c) 
+{
+    for (size_t i = 0; i < c.size(); i++) {
+        std::cout << c[i] << " ";
+    }
+    std::cout << "\nsize-> " << c.size() << "\n";
+    std::cout << "cap -> " << c.capacity() << "\n\n";
+}
+ 
 int main( )
 {
     std::vector<int> container;
     for (size_t i = 1; i < 4; i++)
         container.push_back(i);
  
-    auto print = [](const int& n) { std::cout << " " << n; };
- 
+    print_container(container);
+
     std::cout << "Before clear:";
-    std::for_each(container.begin(), container.end(), print);
+    print_container(container);
     std::cout << "\nSize=" << container.size() << ", Capacity=" << container.capacity() << '\n';
  
     std::cout << "Clear\n";
     container.clear();
  
     std::cout << "After clear:";
-    std::for_each(container.begin(), container.end(), print);
-    std::cout << "\nSize=" << container.size() << ", Capacity=" << container.capacity() << '\n';
+    print_container(container);
+    std::cout << "\nSize=" << container.size() << ", Capacity=" << container.capacity() << '\n' << '\n';
 }
