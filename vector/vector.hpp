@@ -8,6 +8,7 @@
 #include <algorithm> // std::lexicographical_compare, std::copy_backward
 #include <limits> // std::numeric_limits
 
+
 namespace ft
 {
 	template <class T, class Allocator = std::allocator<T> >
@@ -25,11 +26,11 @@ namespace ft
 			typedef typename allocator_type::pointer 			pointer;
 			typedef typename allocator_type::const_pointer 		const_pointer;
 
-			typedef typename ft::RandomAccessIterator<value_type> 		iterator;
-			typedef ft::RandomAccessIterator<value_type,true>	const_iterator;
+			// typedef typename ft::RandomAccessIterator<value_type> 		iterator;
+			// typedef ft::RandomAccessIterator<value_type,true>	const_iterator;
 
-			// typedef typename std::vector<T>::iterator			iterator;
-			// typedef typename std::vector<T>::const_iterator		const_iterator;
+			typedef typename std::vector<T>::iterator			iterator;
+			typedef typename std::vector<T>::const_iterator		const_iterator;
 
 			typedef std::reverse_iterator<iterator> 			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>		const_reverse_iterator;
@@ -192,29 +193,30 @@ namespace ft
 
 			iterator begin() { return iterator(array); }
 
-			const_iterator begin() const {return const_iterator(array); }
+			const_iterator cbegin() const {return const_iterator(array); }
 
 			iterator end() { return iterator(array + vsize); }
 
-			const_iterator end() const { return const_iterator(array + vsize); }
+			const_iterator cend() const { return const_iterator(array + vsize); }
 
 			// ------------------------------------------
 			// ------------------------------------------
 
 			reverse_iterator rbegin() { 
-				return reverse_iterator(array + vsize - (vsize == 0 ? 0 : 1)); 
+				return reverse_iterator(this->end() - (vsize == 0 ? 0 : 1)); 
+				//return reverse_iterator(array + vsize - (vsize == 0 ? 0 : 1)); 
 			}
 
-			const_reverse_iterator rbegin() const { 
-				return const_reverse_iterator(array + vsize - (vsize == 0 ? 0 : 1)); 
+			const_reverse_iterator crbegin() const { 
+				return const_reverse_iterator(this->end() - (vsize == 0 ? 0 : 1)); 
 			}
 
 			reverse_iterator rend() { 
-				return reverse_iterator(array - (vsize == 0 ? 0 : 1)); 
+				return reverse_iterator(this->begin() - (vsize == 0 ? 0 : 1)); 
 			}
 
-			const_reverse_iterator rend() const { 
-				return const_reverse_iterator(array - (vsize == 0 ? 0 : 1)); 
+			const_reverse_iterator crend() const { 
+				return const_reverse_iterator(this->begin() - (vsize == 0 ? 0 : 1)); 
 			}
 
 			// ------------------------------------------
