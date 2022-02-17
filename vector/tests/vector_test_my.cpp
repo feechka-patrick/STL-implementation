@@ -1310,71 +1310,71 @@ void ft_relational_operators() {
 	std::cout << (big_mouse <= mouse) << std::endl;
 }
 
-void const_iterators() {
-	std::cout << "const_iterators" << std::endl;
-	lib::con<int> src;
-	for (int i = 0; i < 20; ++i) {
-		src.push_back(i);
-	}
-	lib::con<const int>                 def(src.begin(), src.end());
-	lib::con<const int>::const_iterator cit(def.begin());
+// void const_iterators() {
+// 	std::cout << "const_iterators" << std::endl;
+// 	lib::con<int> src;
+// 	for (int i = 0; i < 20; ++i) {
+// 		src.push_back(i);
+// 	}
+// 	lib::con<const int>                 def(src.begin(), src.end());
+// 	lib::con<const int>::const_iterator cit(def.begin());
 
-	while (cit != def.end()) {
-		std::cout << *cit << " ";
-		++cit;
-	}
-	std::cout << std::endl;
-//	*cit = 6; // DOES NOT COMPILE
+// 	while (cit != def.end()) {
+// 		std::cout << *cit << " ";
+// 		++cit;
+// 	}
+// 	std::cout << std::endl;
+// //	*cit = 6; // DOES NOT COMPILE
 
-	--cit;
-	lib::con<const int>::const_iterator cit2(def.begin());
-	std::cout << (cit > cit2) << std::endl;
-	std::cout << (cit >= cit2) << std::endl;
-	std::cout << (cit < cit2) << std::endl;
-	std::cout << (cit <= cit2) << std::endl;
-	std::cout << (cit == cit2) << std::endl;
+// 	--cit;
+// 	lib::con<const int>::const_iterator cit2(def.begin());
+// 	std::cout << (cit > cit2) << std::endl;
+// 	std::cout << (cit >= cit2) << std::endl;
+// 	std::cout << (cit < cit2) << std::endl;
+// 	std::cout << (cit <= cit2) << std::endl;
+// 	std::cout << (cit == cit2) << std::endl;
 
-	lib::con<int>::const_iterator cit_src(src.begin());
-	while (cit_src != src.end()) {
-		std::cout << *cit_src << " ";
-		++cit_src;
-	}
-	std::cout << std::endl;
-	// *cit_src = 6; // DOES NOT COMPILE
-}
+// 	lib::con<int>::const_iterator cit_src(src.begin());
+// 	while (cit_src != src.end()) {
+// 		std::cout << *cit_src << " ";
+// 		++cit_src;
+// 	}
+// 	std::cout << std::endl;
+// 	// *cit_src = 6; // DOES NOT COMPILE
+// }
 
-void reverse_iterators() {
-	std::cout << "reverse_iterators" << std::endl;
-	lib::con<int> src;
-	for (int i = 0; i < 20; ++i) {
-		src.push_back(i);
-	}
-	lib::con<const int>                         def(src.begin(), src.end());
-	lib::con<const int>::const_reverse_iterator rcit(def.rbegin());
+// void reverse_iterators() {
+// 	std::cout << "reverse_iterators" << std::endl;
+// 	lib::con<int> src;
+// 	for (int i = 0; i < 20; ++i) {
+// 		src.push_back(i);
+// 	}
+// 	lib::con<const int>                         def(src.begin(), src.end());
+// 	lib::con<const int>::const_reverse_iterator rcit(def.rbegin());
 
-	while (rcit != def.rend()) {
-		std::cout << *rcit << " ";
-		++rcit;
-	}
-	std::cout << std::endl;
-//	*rcit = 6; // DOES NOT COMPILE
+// 	while (rcit != def.rend()) {
+// 		std::cout << *rcit << " ";
+// 		++rcit;
+// 	}
+// 	std::cout << std::endl;
+// //	*rcit = 6; // DOES NOT COMPILE
 
-	--rcit;
-	lib::con<const int>::const_reverse_iterator rcit2(def.rbegin());
-	std::cout << (rcit > rcit2) << std::endl;
-	std::cout << (rcit >= rcit2) << std::endl;
-	std::cout << (rcit < rcit2) << std::endl;
-	std::cout << (rcit <= rcit2) << std::endl;
-	std::cout << (rcit == rcit2) << std::endl;
+// 	--rcit;
+// 	lib::con<const int>::const_reverse_iterator rcit2(def.rbegin());
+// 	std::cout << (rcit > rcit2) << std::endl;
+// 	std::cout << (rcit >= rcit2) << std::endl;
+// 	std::cout << (rcit < rcit2) << std::endl;
+// 	std::cout << (rcit <= rcit2) << std::endl;
+// 	std::cout << (rcit == rcit2) << std::endl;
 
-	lib::con<int>::const_reverse_iterator rcit_src(src.rbegin());
-	while (rcit_src != src.rend()) {
-		std::cout << *rcit_src << " ";
-		++rcit_src;
-	}
-	std::cout << std::endl;
-	// *rcit_src = 6; // DOES NOT COMPILE
-}
+// 	lib::con<int>::const_reverse_iterator rcit_src(src.rbegin());
+// 	while (rcit_src != src.rend()) {
+// 		std::cout << *rcit_src << " ";
+// 		++rcit_src;
+// 	}
+// 	std::cout << std::endl;
+// 	// *rcit_src = 6; // DOES NOT COMPILE
+// }
 
 void relational_operators() {
 	std::cout << "relational_operators" << std::endl;

@@ -87,7 +87,7 @@ namespace ft
 				}
 			}
 
-			vector( const vector& other ) : vsize(0), csize(0), alloc(other.alloc) 
+			vector( const vector& other ) :  alloc(other.alloc) , vsize(0), csize(0)
 			{
 				try
 				{
@@ -130,6 +130,7 @@ namespace ft
 				for (size_type i = 0; i < vsize ; ++i) {
 					alloc.construct(array + i, other[i]);
 				}
+				return (*this);
 			}
 
 
@@ -146,10 +147,10 @@ namespace ft
 			}
 
 			template< class InputIt >
-			void assign( InputIt first, InputIt last )
+			void assign( InputIt first, InputIt last,
+				typename enable_if< !std::numeric_limits<InputIt>::is_specialized >::type* = 0)
 			{
-				//vsize = std::distance(first, last);
-				vsize = last - first;
+				vsize = std::distance(first, last);
 				if (csize < vsize) reserve(vsize);
 
 				for (size_type i = 0; first != last; ++first, ++i) {
@@ -422,7 +423,7 @@ namespace ft
 	};
 
 	template< class T, class Alloc >
-	bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+	bool operator==( const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs )
 	{
 		return (lhs.size() == rhs.size() 
 			&& std::equal(lhs.begin(), lhs.end(), rhs.begin()));
