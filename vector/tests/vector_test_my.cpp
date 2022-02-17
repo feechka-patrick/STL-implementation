@@ -1444,14 +1444,14 @@ void ft_modifiers_test() {
 int main(void)
 {
 	ft_constructors_capacity_test();
-	ft_operator_assignment();
-	ft_iterator_test();
-	ft_el_access_test();
-	ft_modifiers_test();
+	// ft_operator_assignment();
+	// ft_iterator_test();
+	// ft_el_access_test();
+	// ft_modifiers_test();
 
 	// const_iterators();
 	// reverse_iterators();
-	relational_operators();
-	const_iter_with_iter();
+	// relational_operators();
+	// const_iter_with_iter();
 	return 0;
 }
