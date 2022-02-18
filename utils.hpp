@@ -5,9 +5,10 @@ namespace ft {
 	// -- swap
 	template<typename T>
 	void swap(T& lhs, T& rhs){
-		T& tmp = lhs;
+		T tmp(lhs);
+
 		lhs = rhs;
-		rhs = lhs;
+		rhs = tmp;
 	}
 
 	// -- conditional

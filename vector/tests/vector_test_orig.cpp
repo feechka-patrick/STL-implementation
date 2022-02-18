@@ -9,7 +9,7 @@
 // Constructors ================================================================
 
 void std_defoult_constructor() {
-	std::cout << "\ndefoult_constructor\n" << std::endl;
+	std::cout << "\ndefault_constructor\n" << std::endl;
 	lib::con<Test> useless;
 
 	std::cout << "empty() : " << useless.empty()    << std::endl;
@@ -94,7 +94,7 @@ void std_resize_test() {
 	std::cout << "capacity: " << mouse.capacity() << std::endl;
 	std::cout << "arr     :" << std::endl;
 	for (size_t i = 0; i < mouse.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
+		if (i != 0 && i % 16 == 0)
 			std::cout << std::endl;
 		std::cout << mouse[i].some_ << " ";
 	}
@@ -633,7 +633,7 @@ void std_push_back_test() {
 
 	empty.push_back(7);
 
-	std::cout << "size    : " << empty.size()     << std::endl;
+	std::cout << "empty size    : " << empty.size()     << std::endl;
 	std::cout << "capacity: " << empty.capacity() << std::endl;
 	std::cout << "arr     :" << std::endl;
 	for (size_t i = 0; i < empty.size(); ++i) {
@@ -642,22 +642,36 @@ void std_push_back_test() {
 		std::cout << empty.at(i).some_ << " ";
 	}
 	std::cout << std::endl;
+	std::cout << std::endl;
 
-	mouse.push_back(mouse[127]);
 
-	std::cout << "size    : " << mouse.size()     << std::endl;
+std::cout << "mouse size    : " << mouse.size()     << std::endl;
 	std::cout << "capacity: " << mouse.capacity() << std::endl;
 	std::cout << "arr     :" << std::endl;
 	for (size_t i = 0; i < mouse.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
+		if (i != 0 && i % 10 == 0)
 			std::cout << std::endl;
 		std::cout << mouse.at(i).some_ << " ";
 	}
 	std::cout << std::endl;
+	std::cout << std::endl;
+
+	mouse.push_back(mouse[127]);
+
+	std::cout << "mouse size    : " << mouse.size()     << std::endl;
+	std::cout << "capacity: " << mouse.capacity() << std::endl;
+	std::cout << "arr     :" << std::endl;
+	for (size_t i = 0; i < mouse.size(); ++i) {
+		if (i != 0 && i % 10 == 0)
+			std::cout << std::endl;
+		std::cout << mouse.at(i).some_ << " ";
+	}
+	std::cout << std::endl;
+	std::cout << std::endl;
 
 	empty2.push_back(mouse[127]);
 
-	std::cout << "size    : " << empty2.size()     << std::endl;
+	std::cout << "empty2 size    : " << empty2.size()     << std::endl;
 	std::cout << "capacity: " << empty2.capacity() << std::endl;
 	std::cout << "arr     :" << std::endl;
 	for (size_t i = 0; i < empty2.size(); ++i) {
@@ -665,6 +679,7 @@ void std_push_back_test() {
 			std::cout << std::endl;
 		std::cout << empty2.at(i).some_ << " ";
 	}
+	std::cout << std::endl;
 	std::cout << std::endl;
 }
 
@@ -1309,6 +1324,10 @@ void std_relational_operators() {
 	std::cout << (big_mouse <= mouse) << std::endl;
 }
 
+
+
+//CONST ITERATOR-----------------------------------------------
+
 // void const_iterators() {
 // 	std::cout << "const_iterators" << std::endl;
 // 	lib::con<int> src;
@@ -1375,41 +1394,24 @@ void std_relational_operators() {
 // 	// *rcit_src = 6; // DOES NOT COMPILE
 // }
 
-void relational_operators() {
-	std::cout << "relational_operators" << std::endl;
-	lib::con<int> def;
-	for (int i = 0; i < 20; i += 2) {
-		def.push_back(2);
-	}
-	lib::con<int> def2;
-	for (int i = 1; i < 20; i += 2) {
-		def2.push_back(2);
-	}
-	std::cout << (def >  def2) << std::endl;
-	std::cout << (def >= def2) << std::endl;
-	std::cout << (def <  def2) << std::endl;
-	std::cout << (def <= def2) << std::endl;
-	std::cout << (def == def2) << std::endl;
-	std::cout << (def != def2) << std::endl;
-}
+// void relational_operators() {
+// 	std::cout << "relational_operators" << std::endl;
+// 	lib::con<int> def;
+// 	for (int i = 0; i < 20; i += 2) {
+// 		def.push_back(2);
+// 	}
+// 	lib::con<int> def2;
+// 	for (int i = 1; i < 20; i += 2) {
+// 		def2.push_back(2);
+// 	}
+// 	std::cout << (def >  def2) << std::endl;
+// 	std::cout << (def >= def2) << std::endl;
+// 	std::cout << (def <  def2) << std::endl;
+// 	std::cout << (def <= def2) << std::endl;
+// 	std::cout << (def == def2) << std::endl;
+// 	std::cout << (def != def2) << std::endl;
+// }
 
-void std_modifiers_test() {
-	std_assign_iter_iter_leaks_test();
-	std_assign_iter_iter_1280b_leaks_test();
-
-	std_assign_n_val_test();
-	std_push_back_test();
-	std_pop_back_test();
-	std_insert_iter_val_test();
-	std_insert_iter_n_val_test();
-	std_insert_iter_iter_iter_test();
-	std_insert_iter_iter_iter_8390_leaks_test();
-
-	std_erase_2540_leaks_test(); // <- I don't know why leaks.
-	std_swap_test();
-	std_clear_test();
-	std_relational_operators();
-}
 
 void const_iter_with_iter() {
 	std::cout << "const_iter_with_iter" << std::endl;
@@ -1438,19 +1440,36 @@ void const_iter_with_iter() {
 	std::cout << (rit != rcit) << std::endl;
 }
 
+void std_modifiers_test() {
+	std_assign_iter_iter_leaks_test();
+	// std_assign_iter_iter_1280b_leaks_test();
+
+	// std_assign_n_val_test();
+	// std_push_back_test();
+	// std_pop_back_test();
+	// std_insert_iter_val_test();
+	// std_insert_iter_n_val_test();
+	// std_insert_iter_iter_iter_test();
+	// std_insert_iter_iter_iter_8390_leaks_test();
+
+	// std_erase_2540_leaks_test(); // <- I don't know why leaks.
+	// std_swap_test();
+	// std_clear_test();
+	// std_relational_operators();
+}
 // =============================================================================
 
 int main()
 {
-	std_constructors_capacity_test();
+	// std_constructors_capacity_test();
 	// std_operator_assignment_test();
 	// std_iterator_test();
 	// std_el_access_test();
 	// std_modifiers_test();
 
-	// // const_iterators();
-	// // reverse_iterators();
-	// relational_operators();
-	// const_iter_with_iter();
+	// const_iterators();
+	// reverse_iterators();
+	std_relational_operators();
+	const_iter_with_iter();
 	return 0;
 }

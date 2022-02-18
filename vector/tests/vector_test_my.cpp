@@ -9,8 +9,8 @@
 
 // Constructors ================================================================
 
-void ft_defoult_constructor() {
-	std::cout << "\ndefoult_constructor\n" << std::endl;
+void ft_default_constructor() {
+	std::cout << "\ndefault_constructor\n" << std::endl;
 	lib::con<Test> useless;
 
 	std::cout << "empty() : " << useless.empty()    << std::endl;
@@ -95,7 +95,7 @@ void ft_resize_test() {
 	std::cout << "capacity: " << mouse.capacity() << std::endl;
 	std::cout << "arr     :" << std::endl;
 	for (size_t i = 0; i < mouse.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
+		if (i != 0 && i % 16 == 0)
 			std::cout << std::endl;
 		std::cout << mouse[i].some_ << " ";
 	}
@@ -295,7 +295,7 @@ void ft_reserve_test() {
 }
 
 void ft_constructors_capacity_test() {
-	ft_defoult_constructor();
+	ft_default_constructor();
 	ft_n_constructor();
 	ft_n_val_constructor();
 	ft_copy_constructor();
@@ -634,7 +634,7 @@ void ft_push_back_test() {
 
 	empty.push_back(7);
 
-	std::cout << "size    : " << empty.size()     << std::endl;
+	std::cout << "empty size    : " << empty.size()     << std::endl;
 	std::cout << "capacity: " << empty.capacity() << std::endl;
 	std::cout << "arr     :" << std::endl;
 	for (size_t i = 0; i < empty.size(); ++i) {
@@ -643,22 +643,36 @@ void ft_push_back_test() {
 		std::cout << empty.at(i).some_ << " ";
 	}
 	std::cout << std::endl;
+	std::cout << std::endl;
 
-	mouse.push_back(mouse[127]);
 
-	std::cout << "size    : " << mouse.size()     << std::endl;
+	std::cout << "mouse size    : " << mouse.size()     << std::endl;
 	std::cout << "capacity: " << mouse.capacity() << std::endl;
 	std::cout << "arr     :" << std::endl;
 	for (size_t i = 0; i < mouse.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
+		if (i != 0 && i % 10 == 0)
 			std::cout << std::endl;
 		std::cout << mouse.at(i).some_ << " ";
 	}
 	std::cout << std::endl;
+	std::cout << std::endl;
+
+	mouse.push_back(mouse[127]);
+
+	std::cout << "mouse size    : " << mouse.size()     << std::endl;
+	std::cout << "capacity: " << mouse.capacity() << std::endl;
+	std::cout << "arr     :" << std::endl;
+	for (size_t i = 0; i < mouse.size(); ++i) {
+		if (i != 0 && i % 10 == 0)
+			std::cout << std::endl;
+		std::cout << mouse.at(i).some_ << " ";
+	}
+	std::cout << std::endl;
+	std::cout << std::endl;
 
 	empty2.push_back(mouse[127]);
 
-	std::cout << "size    : " << empty2.size()     << std::endl;
+	std::cout << "empty2 size    : " << empty2.size()     << std::endl;
 	std::cout << "capacity: " << empty2.capacity() << std::endl;
 	std::cout << "arr     :" << std::endl;
 	for (size_t i = 0; i < empty2.size(); ++i) {
@@ -667,7 +681,7 @@ void ft_push_back_test() {
 		std::cout << empty2.at(i).some_ << " ";
 	}
 	std::cout << std::endl;
-
+	std::cout << std::endl;
 }
 
 void ft_pop_back_test() {
@@ -1005,37 +1019,38 @@ void ft_insert_iter_iter_iter_8390_leaks_test() {
 	}
 	std::cout << std::endl;
 
-	try {
-		mouse.insert(mouse.begin(), fat_mouse.begin() + 10, fat_mouse.begin());
-	} catch(std::exception & e) {
-		std::cout << e.what() << std::endl;
-	}
+	lib::con<Test> mouse23(fat_mouse.begin() + 10, fat_mouse.begin());
+	// try {
+	// 	mouse.insert(mouse.begin(), fat_mouse.begin() + 10, fat_mouse.begin());
+	// } catch(std::exception & e) {
+	// 	std::cout << e.what() << std::endl;
+	// }
 
-	std::cout << "size    : " << mouse.size()     << std::endl;
-	std::cout << "capacity: " << mouse.capacity() << std::endl;
-	std::cout << "arr     :" << std::endl;
-	for (size_t i = 0; i < mouse.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
-			std::cout << std::endl;
-		std::cout << mouse.at(i).some_ << " ";
-	}
-	std::cout << std::endl;
+	// std::cout << "size    : " << mouse.size()     << std::endl;
+	// std::cout << "capacity: " << mouse.capacity() << std::endl;
+	// std::cout << "arr     :" << std::endl;
+	// for (size_t i = 0; i < mouse.size(); ++i) {
+	// 	if (i != 0 && i % 32 == 0)
+	// 		std::cout << std::endl;
+	// 	std::cout << mouse.at(i).some_ << " ";
+	// }
+	// std::cout << std::endl;
 
-	try {
-		mouse.insert(mouse.begin(), fat_mouse.begin(), (fat_mouse.begin() + fat_mouse.max_size()));
-	} catch(std::exception & e) {
-		std::cout << e.what() << std::endl;
-	}
+	// try {
+	// 	mouse.insert(mouse.begin(), fat_mouse.begin(), (fat_mouse.begin() + fat_mouse.max_size()));
+	// } catch(std::exception & e) {
+	// 	std::cout << e.what() << std::endl;
+	// }
 
-	std::cout << "size    : " << mouse.size()     << std::endl;
-	std::cout << "capacity: " << mouse.capacity() << std::endl;
-	std::cout << "arr     :" << std::endl;
-	for (size_t i = 0; i < mouse.size(); ++i) {
-		if (i != 0 && i % 32 == 0)
-			std::cout << std::endl;
-		std::cout << mouse.at(i).some_ << " ";
-	}
-	std::cout << std::endl;
+	// std::cout << "size    : " << mouse.size()     << std::endl;
+	// std::cout << "capacity: " << mouse.capacity() << std::endl;
+	// std::cout << "arr     :" << std::endl;
+	// for (size_t i = 0; i < mouse.size(); ++i) {
+	// 	if (i != 0 && i % 32 == 0)
+	// 		std::cout << std::endl;
+	// 	std::cout << mouse.at(i).some_ << " ";
+	// }
+	// std::cout << std::endl;
 
 }
 
@@ -1310,6 +1325,9 @@ void ft_relational_operators() {
 	std::cout << (big_mouse <= mouse) << std::endl;
 }
 
+
+//CONST ITERATOR-----------------------------------------------
+
 // void const_iterators() {
 // 	std::cout << "const_iterators" << std::endl;
 // 	lib::con<int> src;
@@ -1376,23 +1394,23 @@ void ft_relational_operators() {
 // 	// *rcit_src = 6; // DOES NOT COMPILE
 // }
 
-void relational_operators() {
-	std::cout << "relational_operators" << std::endl;
-	lib::con<int> def;
-	for (int i = 0; i < 20; i += 2) {
-		def.push_back(2);
-	}
-	lib::con<int> def2;
-	for (int i = 1; i < 20; i += 2) {
-		def2.push_back(2);
-	}
-	std::cout << (def >  def2) << std::endl;
-	std::cout << (def >= def2) << std::endl;
-	std::cout << (def <  def2) << std::endl;
-	std::cout << (def <= def2) << std::endl;
-	std::cout << (def == def2) << std::endl;
-	std::cout << (def != def2) << std::endl;
-}
+// void relational_operators() {
+// 	std::cout << "relational_operators" << std::endl;
+// 	lib::con<int> def;
+// 	for (int i = 0; i < 20; i += 2) {
+// 		def.push_back(2);
+// 	}
+// 	lib::con<int> def2;
+// 	for (int i = 1; i < 20; i += 2) {
+// 		def2.push_back(2);
+// 	}
+// 	std::cout << (def >  def2) << std::endl;
+// 	std::cout << (def >= def2) << std::endl;
+// 	std::cout << (def <  def2) << std::endl;
+// 	std::cout << (def <= def2) << std::endl;
+// 	std::cout << (def == def2) << std::endl;
+// 	std::cout << (def != def2) << std::endl;
+// }
 
 void const_iter_with_iter() {
 	std::cout << "const_iter_with_iter" << std::endl;
@@ -1422,36 +1440,39 @@ void const_iter_with_iter() {
 }
 
 void ft_modifiers_test() {
-	ft_assign_iter_iter_leaks_test();
-	ft_assign_iter_iter_1280b_leaks_test();
+	// ft_assign_iter_iter_leaks_test();//segfault
+	// ft_assign_iter_iter_1280b_leaks_test();//segfault
 
-	ft_assign_n_val_test();
-	ft_push_back_test();
-	ft_pop_back_test();
-	ft_insert_iter_val_test();
-	ft_insert_iter_n_val_test();
-	ft_insert_iter_iter_iter_test();
-	ft_insert_iter_iter_iter_8390_leaks_test();
+	// ft_assign_n_val_test(); //+
+	// ft_push_back_test(); //+
+	// ft_pop_back_test(); //+
+	// ft_insert_iter_val_test();//+
+	// ft_insert_iter_n_val_test();//+
+	// ft_insert_iter_iter_iter_test();//+
+	// ft_insert_iter_iter_iter_8390_leaks_test();//exception
 
-	ft_erase_2540_leaks_test();
-	ft_swap_test();
-	ft_clear_test();
-	ft_relational_operators();
+	// ft_erase_2540_leaks_test();//+
+	// ft_swap_test();//+
+	// ft_clear_test();//+
+	// ft_relational_operators();//+
 }
 
 // =============================================================================
 
 int main(void)
 {
-	ft_constructors_capacity_test();
+	// ft_constructors_capacity_test();
 	// ft_operator_assignment();
 	// ft_iterator_test();
 	// ft_el_access_test();
+	// rbegin??
+
 	// ft_modifiers_test();
 
-	// const_iterators();
+	// const_iterators(); //--error in std
 	// reverse_iterators();
-	// relational_operators();
-	// const_iter_with_iter();
+
+	// ft_relational_operators();//+
+	// const_iter_with_iter();//+
 	return 0;
 }

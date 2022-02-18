@@ -69,8 +69,7 @@ namespace ft
 				const allocator_type &_alloc = allocator_type(),
 				typename ft::enable_if<!std::numeric_limits<InputIt>::is_integer>::type* = 0) : alloc(_alloc)
 			{
-				//vsize = std::distance(first, last);
-				vsize = last - first;
+				vsize = std::distance(first, last);
 				csize = vsize;
 				try
 				{
@@ -136,9 +135,10 @@ namespace ft
 
 			// -- MEMBER FUNCTIONS
 
-			void assign( size_type count, const T& value )
+			void assign( size_type count, const T& _value )
 			{
 				this->clear();
+				const T value = _value;
 				if (csize < count) reserve(count);
 
 				for (size_type i = 0; i < count; i++)
@@ -151,14 +151,16 @@ namespace ft
 				typename enable_if< !std::numeric_limits<InputIt>::is_specialized >::type* = 0)
 			{
 				vsize = std::distance(first, last);
+				ft::vector<T> value(first, last);
+
 				if (csize < vsize) reserve(vsize);
 
-				for (size_type i = 0; first != last; ++first, ++i) {
-					alloc.construct(array + i, *first);
+				for (size_type i = 0; i < value.size(); ++i) {
+					alloc.construct(array + i, value[i]);
 				}
 			}
 
-			allocator_type get_allocator() const { return alloc; }
+			allocator_type get_alassignlocator() const { return alloc; }
 
 			reference at( size_type pos )
 			{
@@ -192,11 +194,11 @@ namespace ft
 
 			// -- ITERATORS
 
-			iterator begin() { return iterator(array); }
+			iterator begin() const { return iterator(array); }
 
 			const_iterator cbegin() const {return const_iterator(array); }
 
-			iterator end() { return iterator(array + vsize); }
+			iterator end() const { return iterator(array + vsize); }
 
 			const_iterator cend() const { return const_iterator(array + vsize); }
 
@@ -204,8 +206,8 @@ namespace ft
 			// ------------------------------------------
 
 			reverse_iterator rbegin() { 
-				return reverse_iterator(this->end() - (vsize == 0 ? 0 : 1)); 
-				//return reverse_iterator(array + vsize - (vsize == 0 ? 0 : 1)); 
+				return reverse_iterator(iterator(array + vsize - (vsize == 0 ? 0 : 1))); 
+				//return reverse_iterator(iterator(array + vsize - 1));
 			}
 
 			const_reverse_iterator crbegin() const { 
@@ -248,8 +250,7 @@ namespace ft
 					throw vector::MemoryException();
 				}
 				csize = new_cap;
-				for (size_type i = 0; i < vsize; ++i) 
-					alloc.construct(newarray + i, array[i]);
+				std::copy(this->begin(), this->end(), iterator(newarray));
 				
 				//free
 				for (size_type i = 0; i < vsize; i++){
@@ -275,14 +276,15 @@ namespace ft
 			// ------------------------------------------
 			// ------------------------------------------
 
-			iterator insert( iterator pos, const T& value ) { //1
+			iterator insert( iterator pos, const T& _value ) { //1
 				size_type i = pos - this->begin();
+				const T value = _value;
 
 				if (pos == this->end()) {
 					this->push_back(value);
 					return this->end();
 				}
-				if (vsize == csize) reserve (2 * csize);
+				if (vsize == csize) reserve (2 * vsize);
 				
 				pos = iterator(array + i);
 				std::copy_backward(pos, this->end(), this->end() + 1);
@@ -291,11 +293,12 @@ namespace ft
 				return pos;
 			}
 
-			void insert( iterator pos, size_type count, const T& value ) { //3
+			void insert( iterator pos, size_type count, const T& _value ) { //3
 				size_type dist = pos - this->begin();
+				const T value = _value;
 
-				if (2 * csize < count + vsize) reserve(count + vsize);
-				else if (csize < count + vsize) reserve(2 * csize);
+				if (2 * vsize < count + vsize) reserve(count + vsize);
+				else if (csize < count + vsize) reserve(2 * vsize);
 
 				pos = iterator(array + dist);
 				std::copy_backward(pos, this->end(), this->end() + count);
@@ -308,18 +311,21 @@ namespace ft
 			void insert( iterator pos, InputIt first, InputIt last, 
 				typename ft::enable_if<!std::numeric_limits<InputIt>::is_integer>::type* = 0) {//4
 				size_type dist = pos - this->begin();
+				ft::vector<T> value(first, last);	
 
 				const size_type count = last - first;
-				if (2 * csize < count + vsize) reserve(count + vsize);
-				else if (csize < count + vsize) reserve(2 * csize);
+				if (2 * vsize < count + vsize) reserve(count + vsize);
+				else if (csize < count + vsize) reserve(2 * vsize);
 
 				pos = iterator(array + dist);
 
 				std::copy_backward(pos, this->end(), this->end() + count);
-				vsize+=count;
-				for (size_type i = pos - this->begin() ; first != last; ++first, ++i){
+				vsize += count;
 
-					alloc.construct(array + i, *first);
+				size_type j = 0;
+				size_type i = dist;
+				for ( ; j < value.size(); ++i, ++j){
+					alloc.construct(array + i, value[j]);
 				}
 			}
 
@@ -344,8 +350,9 @@ namespace ft
 			// ------------------------------------------
 			// ------------------------------------------
 
-			void push_back( const T& value )
+			void push_back( const T& _value )
 			{
+				const T value = _value;
 				if (csize == 0) reserve(1);
 				if (csize == vsize) reserve(2 * csize);
 				alloc.construct(array + vsize, value);
