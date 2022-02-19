@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../utils.hpp" // ft::swap 
 #include "random_acces_iterator.hpp" // iterator
+#include "reverse_iterator.hpp" // iterator
 #include <iterator> // std::reverse_iterator, std::distance
 #include <vector> // iterator from vector
 #include <algorithm> // std::lexicographical_compare, std::copy_backward
@@ -23,18 +24,23 @@ namespace ft
 			typedef std::ptrdiff_t 								difference_type;
 			typedef value_type& 								reference;
 			typedef const value_type& 							const_reference;
-			typedef typename allocator_type::pointer 			pointer;
-			typedef typename allocator_type::const_pointer 		const_pointer;
+			// typedef typename allocator_type::pointer 			pointer;
+			// typedef typename allocator_type::const_pointer 		const_pointer;
 
-			// typedef typename ft::RandomAccessIterator<value_type> 		iterator;
-			// typedef ft::RandomAccessIterator<value_type,true>	const_iterator;
+			typedef value_type*									pointer;
+			typedef const value_type* 							const_pointer;
 
-			typedef typename std::vector<T>::iterator			iterator;
-			typedef typename std::vector<T>::const_iterator		const_iterator;
+			// typedef typename std::vector<T>::iterator			iterator;
+			// typedef typename std::vector<T>::const_iterator		const_iterator;
 
-			typedef std::reverse_iterator<iterator> 			reverse_iterator;
-			typedef std::reverse_iterator<const_iterator>		const_reverse_iterator;
+			// typedef std::reverse_iterator<iterator> 			reverse_iterator;
+			// typedef std::reverse_iterator<const_iterator>		const_reverse_iterator;
+			
+			typedef typename ft::RandomAccessIterator<value_type> 		iterator;
+			typedef typename ft::RandomAccessIterator<value_type,true>	const_iterator;
 
+			typedef ft::reverse_iterator<iterator> 			reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
 			//	-- CONSTRUCTORS
 
@@ -137,30 +143,24 @@ namespace ft
 
 			void assign( size_type count, const T& _value )
 			{
-				this->clear();
 				const T value = _value;
-				if (csize < count) reserve(count);
-
-				for (size_type i = 0; i < count; i++)
-					alloc.construct(array + i, value);
-				vsize = count;
+				this->clear();
+				this->insert(this->begin(), count, value);
 			}
 
 			template< class InputIt >
 			void assign( InputIt first, InputIt last,
 				typename enable_if< !std::numeric_limits<InputIt>::is_specialized >::type* = 0)
 			{
-				vsize = std::distance(first, last);
-				ft::vector<T> value(first, last);
+				if (first > last || std::distance(first, last) + vsize > this->max_size())
+					throw vector::LengthException();
 
-				if (csize < vsize) reserve(vsize);
-
-				for (size_type i = 0; i < value.size(); ++i) {
-					alloc.construct(array + i, value[i]);
-				}
+				vector<value_type> vv(first, last);
+				this->clear();				
+				this->insert(this->begin(), vv.begin(), vv.end());
 			}
 
-			allocator_type get_alassignlocator() const { return alloc; }
+			allocator_type get_allocator() const { return alloc; }
 
 			reference at( size_type pos )
 			{
@@ -206,7 +206,9 @@ namespace ft
 			// ------------------------------------------
 
 			reverse_iterator rbegin() { 
-				return reverse_iterator(iterator(array + vsize - (vsize == 0 ? 0 : 1))); 
+				if (vsize == 0)
+					return reverse_iterator(iterator(array + vsize));
+				return reverse_iterator(iterator(array + vsize - 1)); 
 				//return reverse_iterator(iterator(array + vsize - 1));
 			}
 
@@ -240,22 +242,15 @@ namespace ft
 				if (new_cap <= csize) return;
 
 				//new array
-				pointer newarray;
-				try
-				{
-					newarray = alloc.allocate(new_cap);
-				}
-				catch(const std::exception& e)
-				{
-					throw vector::MemoryException();
-				}
+				pointer newarray = alloc.allocate(new_cap);
+
 				csize = new_cap;
 				std::copy(this->begin(), this->end(), iterator(newarray));
 				
-				//free
-				for (size_type i = 0; i < vsize; i++){
-					alloc.destroy(array + i);
-				}
+				// //free
+				// for (size_type i = 0; i < vsize; i++){
+				// 	alloc.destroy(array + i);
+				// }
 				if (csize != 0) alloc.deallocate(array, csize);
 
 				array = newarray;
@@ -303,13 +298,27 @@ namespace ft
 				pos = iterator(array + dist);
 				std::copy_backward(pos, this->end(), this->end() + count);
 				vsize += count;
+
 				for (size_type i = dist; count > 0; --count, ++i)
 					alloc.construct(array + i, value);
+			}
+
+			void print(vector<value_type> vv) 
+			{
+				std::cout << "print current state\n";
+				for (size_t i = 0; i < vv.size(); i++) {
+					std::cout << vv[i].some_ << " ";
+				}
+				std::cout << "\nsize-> " << vv.size() << "\n";
+				std::cout << "cap -> " << vv.capacity() << "\n\n";
 			}
 
 			template< class InputIt>
 			void insert( iterator pos, InputIt first, InputIt last, 
 				typename ft::enable_if<!std::numeric_limits<InputIt>::is_integer>::type* = 0) {//4
+				if (first > last || std::distance(first, last) + vsize > this->max_size())
+					throw vector::LengthException();
+
 				size_type dist = pos - this->begin();
 				ft::vector<T> value(first, last);	
 
@@ -319,14 +328,14 @@ namespace ft
 
 				pos = iterator(array + dist);
 
-				std::copy_backward(pos, this->end(), this->end() + count);
+				
+				if (this->end() - pos > 0)
+					std::copy_backward(pos, this->end(), this->end() + count);
 				vsize += count;
+			
 
-				size_type j = 0;
-				size_type i = dist;
-				for ( ; j < value.size(); ++i, ++j){
-					alloc.construct(array + i, value[j]);
-				}
+				std::copy(value.begin(), value.end(), pos);
+				
 			}
 
 			iterator erase( iterator pos ) {

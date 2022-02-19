@@ -18,8 +18,8 @@ namespace ft {
 
 			RandomAccessIterator() : arr(0) {}
 			RandomAccessIterator(pointer _arr) : arr(_arr) {}
-			RandomAccessIterator(const iterator& other) :
-				arr(other.arr) {}
+			RandomAccessIterator(const RandomAccessIterator<value_type>& other) :
+				arr(other.get_pointer()) {}
 			
 			iterator& operator= (const iterator& other)
 			{
@@ -29,7 +29,7 @@ namespace ft {
 
 			~RandomAccessIterator() {}
 
-			reference operator*() { return *arr; }
+			reference operator*() const { return *arr; }
 
 			pointer operator->() { return arr; }
 
@@ -101,47 +101,47 @@ namespace ft {
 	}
 
 	// it - it
-	template<typename T, bool IsConst> 
-	std::size_t operator-(const RandomAccessIterator<T, IsConst>& lhs, const RandomAccessIterator<T, IsConst>& rhs)
+	template<typename T, bool IsConstL, bool IsConstR> 
+	std::size_t operator-(const RandomAccessIterator<T, IsConstL>& lhs, const RandomAccessIterator<T, IsConstR>& rhs)
 	{
 		if (lhs > rhs)
 			return lhs.get_pointer() - rhs.get_pointer();
 		else return rhs.get_pointer() - lhs.get_pointer();
 	}
 
-	template<typename T, bool IsConst> 
-	bool operator==(const RandomAccessIterator<T, IsConst>& lhs, const RandomAccessIterator<T, IsConst>& rhs)
+	template<typename T, bool IsConstL, bool IsConstR> 
+	bool operator==(const RandomAccessIterator<T, IsConstL>& lhs, const RandomAccessIterator<T, IsConstR>& rhs)
 	{
 		return lhs.get_pointer() == rhs.get_pointer();
 	}
 
 
-	template<typename T, bool IsConst>
-	bool operator!=(const RandomAccessIterator<T, IsConst>& lhs, const RandomAccessIterator<T, IsConst>& rhs)
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator!=(const RandomAccessIterator<T, IsConstL>& lhs, const RandomAccessIterator<T, IsConstR>& rhs)
 	{
 		return lhs.get_pointer() != rhs.get_pointer();
 	}
 
-	template<typename T, bool IsConst>
-	bool operator<(const RandomAccessIterator<T, IsConst>& lhs, const RandomAccessIterator<T, IsConst>& rhs)
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator<(const RandomAccessIterator<T, IsConstL>& lhs, const RandomAccessIterator<T, IsConstR>& rhs)
 	{
 		return lhs.get_pointer() < rhs.get_pointer();
 	}
 
-	template<typename T, bool IsConst>
-	bool operator>(const RandomAccessIterator<T, IsConst>& lhs, const RandomAccessIterator<T, IsConst>& rhs)
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator>(const RandomAccessIterator<T, IsConstL>& lhs, const RandomAccessIterator<T, IsConstR>& rhs)
 	{
 		return lhs.get_pointer() > rhs.get_pointer();
 	}
 
-	template<typename T, bool IsConst>
-	bool operator<=(const RandomAccessIterator<T, IsConst>& lhs, const RandomAccessIterator<T, IsConst>& rhs)
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator<=(const RandomAccessIterator<T, IsConstL>& lhs, const RandomAccessIterator<T, IsConstR>& rhs)
 	{
 		return lhs.get_pointer() <= rhs.get_pointer();
 	}
 
-	template<typename T, bool IsConst>
-	bool operator>=(const RandomAccessIterator<T, IsConst>& lhs, const RandomAccessIterator<T, IsConst>& rhs)
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator>=(const RandomAccessIterator<T, IsConstL>& lhs, const RandomAccessIterator<T, IsConstR>& rhs)
 	{
 		return lhs.get_pointer() >= rhs.get_pointer();
 	}

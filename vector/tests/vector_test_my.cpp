@@ -1019,38 +1019,37 @@ void ft_insert_iter_iter_iter_8390_leaks_test() {
 	}
 	std::cout << std::endl;
 
-	lib::con<Test> mouse23(fat_mouse.begin() + 10, fat_mouse.begin());
-	// try {
-	// 	mouse.insert(mouse.begin(), fat_mouse.begin() + 10, fat_mouse.begin());
-	// } catch(std::exception & e) {
-	// 	std::cout << e.what() << std::endl;
-	// }
+	try {
+		mouse.insert(mouse.begin(), fat_mouse.begin() + 10, fat_mouse.begin());
+	} catch(std::exception & e) {
+		std::cout << e.what() << std::endl;
+	}
 
-	// std::cout << "size    : " << mouse.size()     << std::endl;
-	// std::cout << "capacity: " << mouse.capacity() << std::endl;
-	// std::cout << "arr     :" << std::endl;
-	// for (size_t i = 0; i < mouse.size(); ++i) {
-	// 	if (i != 0 && i % 32 == 0)
-	// 		std::cout << std::endl;
-	// 	std::cout << mouse.at(i).some_ << " ";
-	// }
-	// std::cout << std::endl;
+	std::cout << "size    : " << mouse.size()     << std::endl;
+	std::cout << "capacity: " << mouse.capacity() << std::endl;
+	std::cout << "arr     :" << std::endl;
+	for (size_t i = 0; i < mouse.size(); ++i) {
+		if (i != 0 && i % 32 == 0)
+			std::cout << std::endl;
+		std::cout << mouse.at(i).some_ << " ";
+	}
+	std::cout << std::endl;
 
-	// try {
-	// 	mouse.insert(mouse.begin(), fat_mouse.begin(), (fat_mouse.begin() + fat_mouse.max_size()));
-	// } catch(std::exception & e) {
-	// 	std::cout << e.what() << std::endl;
-	// }
+	try {
+		mouse.insert(mouse.begin(), fat_mouse.begin(), (fat_mouse.begin() + fat_mouse.max_size()));
+	} catch(std::exception & e) {
+		std::cout << e.what() << std::endl;
+	}
 
-	// std::cout << "size    : " << mouse.size()     << std::endl;
-	// std::cout << "capacity: " << mouse.capacity() << std::endl;
-	// std::cout << "arr     :" << std::endl;
-	// for (size_t i = 0; i < mouse.size(); ++i) {
-	// 	if (i != 0 && i % 32 == 0)
-	// 		std::cout << std::endl;
-	// 	std::cout << mouse.at(i).some_ << " ";
-	// }
-	// std::cout << std::endl;
+	std::cout << "size    : " << mouse.size()     << std::endl;
+	std::cout << "capacity: " << mouse.capacity() << std::endl;
+	std::cout << "arr     :" << std::endl;
+	for (size_t i = 0; i < mouse.size(); ++i) {
+		if (i != 0 && i % 32 == 0)
+			std::cout << std::endl;
+		std::cout << mouse.at(i).some_ << " ";
+	}
+	std::cout << std::endl;
 
 }
 
@@ -1394,23 +1393,23 @@ void ft_relational_operators() {
 // 	// *rcit_src = 6; // DOES NOT COMPILE
 // }
 
-// void relational_operators() {
-// 	std::cout << "relational_operators" << std::endl;
-// 	lib::con<int> def;
-// 	for (int i = 0; i < 20; i += 2) {
-// 		def.push_back(2);
-// 	}
-// 	lib::con<int> def2;
-// 	for (int i = 1; i < 20; i += 2) {
-// 		def2.push_back(2);
-// 	}
-// 	std::cout << (def >  def2) << std::endl;
-// 	std::cout << (def >= def2) << std::endl;
-// 	std::cout << (def <  def2) << std::endl;
-// 	std::cout << (def <= def2) << std::endl;
-// 	std::cout << (def == def2) << std::endl;
-// 	std::cout << (def != def2) << std::endl;
-// }
+void relational_operators() {
+	std::cout << "relational_operators" << std::endl;
+	lib::con<int> def;
+	for (int i = 0; i < 20; i += 2) {
+		def.push_back(2);
+	}
+	lib::con<int> def2;
+	for (int i = 1; i < 20; i += 2) {
+		def2.push_back(2);
+	}
+	std::cout << (def >  def2) << std::endl;
+	std::cout << (def >= def2) << std::endl;
+	std::cout << (def <  def2) << std::endl;
+	std::cout << (def <= def2) << std::endl;
+	std::cout << (def == def2) << std::endl;
+	std::cout << (def != def2) << std::endl;
+}
 
 void const_iter_with_iter() {
 	std::cout << "const_iter_with_iter" << std::endl;
@@ -1440,21 +1439,21 @@ void const_iter_with_iter() {
 }
 
 void ft_modifiers_test() {
-	// ft_assign_iter_iter_leaks_test();//segfault
-	// ft_assign_iter_iter_1280b_leaks_test();//segfault
+	ft_assign_iter_iter_leaks_test();//++
+	ft_assign_iter_iter_1280b_leaks_test();//+
 
-	// ft_assign_n_val_test(); //+
-	// ft_push_back_test(); //+
-	// ft_pop_back_test(); //+
-	// ft_insert_iter_val_test();//+
-	// ft_insert_iter_n_val_test();//+
-	// ft_insert_iter_iter_iter_test();//+
-	// ft_insert_iter_iter_iter_8390_leaks_test();//exception
+	ft_assign_n_val_test(); //+
+	ft_push_back_test(); //+
+	ft_pop_back_test(); //+
+	ft_insert_iter_val_test();//+
+	ft_insert_iter_n_val_test();//+
+	ft_insert_iter_iter_iter_test();//+
+	ft_insert_iter_iter_iter_8390_leaks_test();//+
 
-	// ft_erase_2540_leaks_test();//+
-	// ft_swap_test();//+
-	// ft_clear_test();//+
-	// ft_relational_operators();//+
+	ft_erase_2540_leaks_test();//+
+	ft_swap_test();//+
+	ft_clear_test();//+
+	ft_relational_operators();//+
 }
 
 // =============================================================================
@@ -1465,9 +1464,9 @@ int main(void)
 	// ft_operator_assignment();
 	// ft_iterator_test();
 	// ft_el_access_test();
-	// rbegin??
+	// // дописать в reverse итератор операторы сравнения
 
-	// ft_modifiers_test();
+	//  ft_modifiers_test();//+
 
 	// const_iterators(); //--error in std
 	// reverse_iterators();

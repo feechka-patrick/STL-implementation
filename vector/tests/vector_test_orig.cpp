@@ -1394,23 +1394,23 @@ void std_relational_operators() {
 // 	// *rcit_src = 6; // DOES NOT COMPILE
 // }
 
-// void relational_operators() {
-// 	std::cout << "relational_operators" << std::endl;
-// 	lib::con<int> def;
-// 	for (int i = 0; i < 20; i += 2) {
-// 		def.push_back(2);
-// 	}
-// 	lib::con<int> def2;
-// 	for (int i = 1; i < 20; i += 2) {
-// 		def2.push_back(2);
-// 	}
-// 	std::cout << (def >  def2) << std::endl;
-// 	std::cout << (def >= def2) << std::endl;
-// 	std::cout << (def <  def2) << std::endl;
-// 	std::cout << (def <= def2) << std::endl;
-// 	std::cout << (def == def2) << std::endl;
-// 	std::cout << (def != def2) << std::endl;
-// }
+void relational_operators() {
+	std::cout << "relational_operators" << std::endl;
+	lib::con<int> def;
+	for (int i = 0; i < 20; i += 2) {
+		def.push_back(2);
+	}
+	lib::con<int> def2;
+	for (int i = 1; i < 20; i += 2) {
+		def2.push_back(2);
+	}
+	std::cout << (def >  def2) << std::endl;
+	std::cout << (def >= def2) << std::endl;
+	std::cout << (def <  def2) << std::endl;
+	std::cout << (def <= def2) << std::endl;
+	std::cout << (def == def2) << std::endl;
+	std::cout << (def != def2) << std::endl;
+}
 
 
 void const_iter_with_iter() {
@@ -1442,21 +1442,22 @@ void const_iter_with_iter() {
 
 void std_modifiers_test() {
 	std_assign_iter_iter_leaks_test();
-	// std_assign_iter_iter_1280b_leaks_test();
+	std_assign_iter_iter_1280b_leaks_test();
 
-	// std_assign_n_val_test();
-	// std_push_back_test();
-	// std_pop_back_test();
-	// std_insert_iter_val_test();
-	// std_insert_iter_n_val_test();
-	// std_insert_iter_iter_iter_test();
-	// std_insert_iter_iter_iter_8390_leaks_test();
+	std_assign_n_val_test();
+	std_push_back_test();
+	std_pop_back_test();
+	std_insert_iter_val_test();
+	std_insert_iter_n_val_test();
+	std_insert_iter_iter_iter_test();
+	std_insert_iter_iter_iter_8390_leaks_test();
 
-	// std_erase_2540_leaks_test(); // <- I don't know why leaks.
-	// std_swap_test();
-	// std_clear_test();
-	// std_relational_operators();
+	std_erase_2540_leaks_test(); // <- I don't know why leaks.
+	std_swap_test();
+	std_clear_test();
+	std_relational_operators();
 }
+
 // =============================================================================
 
 int main()
@@ -1465,11 +1466,13 @@ int main()
 	// std_operator_assignment_test();
 	// std_iterator_test();
 	// std_el_access_test();
-	// std_modifiers_test();
+
+	//  std_modifiers_test();
+
 
 	// const_iterators();
 	// reverse_iterators();
-	std_relational_operators();
-	const_iter_with_iter();
+	// std_relational_operators();
+	// const_iter_with_iter();
 	return 0;
 }
