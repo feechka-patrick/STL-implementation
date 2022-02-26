@@ -1,10 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
+#include "../vector/vector.hpp"
 
 namespace ft{
-	template<class T, class Container = std::vector<T> > 
+	template<class T, class Container = ft::vector<T> > 
 	class stack{
 		
 		public:
@@ -48,6 +48,8 @@ namespace ft{
 
 		void pop() { c.pop_back(); }
 
+		container_type get_container() { return this->c; }
+
 		private:
 			container_type c;
 
@@ -55,25 +57,25 @@ namespace ft{
 
 	template< class T, class Container >
 	bool operator==( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{ return lhs.c == rhs.c ; }
+		{ return lhs.get_container() == rhs.get_container() ; }
 	
 	template< class T, class Container >
 	bool operator!=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{ return lhs.c != rhs.c ; }
+		{ return lhs.get_container() != rhs.get_container() ; }
 	
 	template< class T, class Container >
 	bool operator<( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{ return lhs.c < rhs.c ; }
+		{ return lhs.get_container() < rhs.get_container() ; }
 	
 	template< class T, class Container >
 	bool operator<=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{ return lhs.c <= rhs.c ; }
+		{ return lhs.get_container() <= rhs.get_container() ; }
 	
 	template< class T, class Container >
 	bool operator>( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{ return lhs.c > rhs.c ; }
+		{ return lhs.get_container() > rhs.get_container() ; }
 	
 	template< class T, class Container >
 	bool operator>=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{ return lhs.c >= rhs.c ; }
+		{ return lhs.get_container() >= rhs.get_container() ; }
 }
