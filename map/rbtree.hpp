@@ -54,47 +54,74 @@ namespace ft{
 			rbtree(const rbtree& obj) : store(obj.store), alloc(obj.alloc) {} // leaks?
 			
 			~rbtree() {}
+			
+			void check(){
+				leftRotate(&store);
+			}
+
+			void	leftRotate(node** x){
+				node* rightTree = (*x)->right;
+				(*x)->right = rightTree->left;
+				rightTree->left->parent = (*x);
+				rightTree->left = (*x);
+				(*x)->parent = rightTree;
+				rightTree->parent = nullptr;
+				(*x) = rightTree;
+			}
+
+			void	rightRotate(node** x){
+				node* leftTree = (*x)->left;
+				(*x)->left = leftTree->right;
+				leftTree->right->parent = (*x);
+				leftTree->right = (*x);
+				(*x)->parent = leftTree;
+				leftTree->parent = nullptr;
+				(*x) = leftTree;
+			}
 
 			void	insert(const value_type& _data){
 				node* current = store;
-				node* x = new node(nil, nil, current->parent, red, _data);
-				x->left->parent = x;
-				x->right->parent = x;
+				node* x = new node(nil, nil, nullptr, red, _data);
 
 				if (current->color == bnil){
 					 store = x;
 					 return;
 				}
-
-				while(current->color != bnil){
+				
+				node* parent = nullptr;
+				while(current != nil){
+					parent = current;
 					if (_data.first < current->data.first)
 						current = current->left;
 					else
 						current = current->right;
 				}
-				if (_data.first < current->parent->data.first)
-					current->parent->left = x;
-				else 
-					current->parent->right = x;
 
-				//if (current->parent->color == black) ok
+				x->parent = parent;		
+				if (_data.first < parent->data.first)
+					parent->left = x;
+				else 
+					parent->right = x;
+
+				//if (parent->color == black) ok
 				//else not ok - balansirovka
 			
 			}
 
+			node* get_root() { return store; }
 			void print_b(node* p, int level){
-				//std::cout << p->color << std::endl;
-
 				if(p->color != bnil)
 				{
-					print_b(p->left, level + 1);
-					for(int i = 0; i < level; i++) std::cout<<"   ";
-					std::cout << p->data.first << std::endl;
-					print_b(p->right,level + 1);
+					print_b(p->right, level + 1);
+					for(int i = 0; i < level; i++) std::cout<<"       ";
+					std::cout << p->data.first;
+					if (p->parent)  std::cout << "p:" << p->parent->data.first << std::endl;
+					print_b(p->left,level + 1);
 				}
 			}
 
 			void print(){
+				std::cout << "print" << std::endl;
 				print_b(store, 0); 
 			}
 	};
