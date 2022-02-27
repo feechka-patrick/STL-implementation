@@ -11,9 +11,8 @@ int main()
     rbt.insert(std::pair<const int, int>(3, 9));
 
     rbt.insert(std::pair<const int, int>(8, 9));
-
+   
     rbt.insert(std::pair<const int, int>(7, 9));
-
     rbt.insert(std::pair<const int, int>(9, 9));
     rbt.print();
 
