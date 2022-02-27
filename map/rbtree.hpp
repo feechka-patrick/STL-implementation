@@ -53,12 +53,22 @@ namespace ft{
 			rbtree() : nil(new node()), store(nil), alloc(allocator_type()){}
 			rbtree(const rbtree& obj) : store(obj.store), alloc(obj.alloc) {} // leaks?
 			
-			~rbtree() {}
+
+			
+			void deleteTree(node** _x){ //posOrder
+				node* x = *_x;
+				if (x == nil) return;
+				deleteTree(&x->left);
+				deleteTree(&x->right);
+				delete x;
+			}
+			~rbtree() {
+				deleteTree(&store);
+				delete nil;
+			}
 			
 			void check(){
-				leftRotate(&store);
-				print();
-				rightRotate(&store);
+				deleteNode(std::pair<const int, int>(5, 9));
 			}
 
 			void	leftRotate(node** x){
@@ -81,6 +91,28 @@ namespace ft{
 				(*x)->parent = leftTree;
 				leftTree->parent = parentx;
 				(*x) = leftTree;
+			}
+
+			node* nextNode(node* x){
+				node* parent = x;
+				x = x->right;
+				while (x != nil)
+				{
+					parent = x;
+					x = x->left;
+				}
+				return parent;
+			}
+
+			node* prevNode(node* x){
+				node* parent = x;
+				x = x->left;
+				while (x != nil)
+				{
+					parent = x;
+					x = x->right;
+				}
+				return parent;
 			}
 
 			node* _uncle(node* x) {
@@ -151,6 +183,57 @@ namespace ft{
 				if (parent->color == black) return;
 				
 				return insertFix(x);
+			}
+
+			//node *find(const Key& key)
+			node* find(const value_type& _data){
+				node* current = store;
+				node* parent = nullptr;
+				while(current != nil && current->data.first != _data.first){
+					parent = current;
+					if (_data.first < current->data.first)
+						current = current->left;
+					else
+						current = current->right;
+				}
+				return current;
+			}
+
+			void replaceSon(node* son, node* nextson){
+				if (son == store) {
+					store = nextson;
+					return;
+				}
+				if (son->parent->left == son)
+					son->parent->left = nextson;
+				else son->parent->right = nextson;
+			}
+			void replaceNode(node* x, node* next){
+				replaceSon(x, next);
+				next->left = x->left;
+				next->right = x->right;
+				next->parent = x->parent;
+				next->color = x->color;
+			}
+
+			void	deleteNode(const value_type& _data){
+				node* x = find(_data);
+				if (x == nil) return;
+				if (x->left == nil && x->right == nil){
+					delete x;
+					return;
+				}
+				if (x->left != nil && x->right != nil){
+					node* next = nextNode(x);
+					replaceSon(next, nil);
+					replaceNode(x, next);
+					delete x;
+					x = next;
+					return;
+				}
+				if (x->left != nil) replaceSon(x, x->left);
+				if (x->right != nil) replaceSon(x, x->right);
+				delete x;
 			}
 
 			node* get_root() { return store; }
