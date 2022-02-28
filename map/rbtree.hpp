@@ -1,15 +1,17 @@
 #pragma once
 
 #include <iostream>
+#include "../utils.hpp"
+#include <utility> //make_pair
 
 namespace ft{
-	enum colors {red, black, bnil}; // bnil - black null node
+	enum colors {red, black}; 
 
-	template<typename T, class Allocator = std::allocator<T> >
+	template<typename Key, typename Data, class Allocator = std::allocator<std::pair<const Key, Data> > >
 	class rbtree{
 		public:
-			typedef T			value_type;
-			typedef Allocator	allocator_type;
+			typedef std::pair<const Key, Data>	value_type;
+			typedef Allocator					allocator_type;
 
 		private:
 			// typedef struct t_base_node{
@@ -42,6 +44,16 @@ namespace ft{
 				t_node(node* _left, node* _right, node* _parent, colors c, value_type _data)
 					: left(_left), right(_right), parent(_parent), color(c), data(_data) {
 					}
+				t_node(const node* obj)
+					: left(obj->left), right(obj->right), parent(obj->parent), color(obj->color), data(obj->data) {
+					}
+
+				void copy(const node* obj){
+					left = obj->left;
+					right = obj->right;
+					parent = obj->parent;
+					color = obj->color;
+				}
 			}	node;
 
 			node*		nil;
@@ -74,12 +86,17 @@ namespace ft{
 			void	leftRotate(node** x){
 				node* rightTree = (*x)->right;
 				(*x)->right = rightTree->left;
-				rightTree->left->parent = (*x);
+				
+				if (rightTree->left != nil)
+					rightTree->left->parent = (*x);
+				rightTree->parent = (*x)->parent;
+				if ((*x)->parent == nil)
+					store = rightTree;
+				else if ((*x) == (*x)->parent->left)
+					(*x)->parent->left = rightTree;
+				else (*x)->parent->right = rightTree;
 				rightTree->left = (*x);
-				node* parentx = (*x)->parent;
 				(*x)->parent = rightTree;
-				rightTree->parent = parentx;
-				(*x) = rightTree;
 			}
 
 			void	rightRotate(node** x){
@@ -122,47 +139,74 @@ namespace ft{
 				else return grandpa->left;
 			}
 
+			node* _brother(node* x) {
+				if (x->parent->left == x)
+					return x->parent->right;
+				else return x->parent->left;
+			}
+
 
 			void 	insertFix(node* x){
-				if (x->parent && x->parent->color == black) return;
-				if (x == store) return;
-				if (x->parent == store){
-					store->color = black;
-					return;
+				while(x->parent->color == red){
+					node* uncle = _uncle(x);
+					if (x->parent == x->parent->parent->left) // parent is left
+					{
+						//---- uncle red
+
+						if (uncle->color == red){
+							x->parent->color = black;
+							uncle->color = black;
+							x->parent->parent->color = red;
+							x = x->parent->parent;
+						}
+
+						//---- uncle black
+
+						else if (uncle->color == black){
+							if (x->parent->right == x)
+								leftRotate(&x->parent);
+							rightRotate(&uncle->parent);
+							uncle->parent->parent->color = black;
+							uncle->parent->parent->left->color = red;
+							uncle->parent->parent->right->color = red;
+							return;
+						}
+					}
+					else // parent is right
+					{
+						//---- uncle red
+
+						if (uncle->color == red){
+							x->parent->color = black;
+							uncle->color = black;
+							x->parent->parent->color = red;
+							x = x->parent->parent;
+						}
+
+						//---- uncle black
+
+						else if (uncle->color == black){
+							if (x->parent->left == x)
+								rightRotate(&x->parent);
+							leftRotate(&uncle->parent);
+							uncle->parent->parent->color = black;
+							uncle->parent->parent->left->color = red;
+							uncle->parent->parent->right->color = red;
+							return;
+						}
+					}
 				}
-
-				node* uncle = _uncle(x);
-				//---- uncle red
-
-				if (uncle->color == red){
-					x->parent->color = black;
-					uncle->color = black;
-					x->parent->parent->color = red;
-					insertFix(x->parent->parent);
-				}
-
-				if (x->parent && x->parent->color == black) return;/// exit??
-
-				//---- uncle black
-
-				if (uncle->color == black){
-					if (x->parent->right == x)
-						leftRotate(&x);
-					rightRotate(&uncle->parent);
-					uncle->parent->parent->color = black;
-					uncle->parent->parent->left->color = red;
-					uncle->parent->parent->right->color = red;
-					return;
-				}
+				store->color = black;
 			}
 
 			void	insert(const value_type& _data){
 				node* current = store;
-				node* x = new node(nil, nil, nullptr, red, _data);
+				node* x = new node(nil, nil, nil, red, _data);
 
 				if (current == nil){
-					 store = x;
-					 return;
+					x->color = black;
+					store = x;
+					return;
 				}
 				
 				node* parent = nullptr;
@@ -179,8 +223,6 @@ namespace ft{
 					parent->left = x;
 				else 
 					parent->right = x;
-
-				if (parent->color == black) return;
 				
 				return insertFix(x);
 			}
@@ -199,48 +241,120 @@ namespace ft{
 				return current;
 			}
 
-			void replaceSon(node* son, node* nextson){
-				if (son == store) {
-					store = nextson;
+			void replaceNode(node* x, node* newx){
+				if (newx != nil)
+					newx->parent = x->parent;
+				if (x == store) {
+					store = newx;
 					return;
 				}
-				if (son->parent->left == son)
-					son->parent->left = nextson;
-				else son->parent->right = nextson;
+				if (x->parent->left == x)
+					x->parent->left = newx;
+				else x->parent->right = newx;
 			}
-			void replaceNode(node* x, node* next){
-				replaceSon(x, next);
-				next->left = x->left;
-				next->right = x->right;
-				next->parent = x->parent;
-				next->color = x->color;
+			void swapNode(node* x, node* next){
+				value_type tmp = std::make_pair<const Key, Data>(x->data.first, x->data.second);
+				//free pairs
+				x->data = std::make_pair<const Key, Data>(next->data.first, next->data.second);
+				next->data = std::make_pair<const Key, Data>(tmp.first, tmp.second);
+			}
+
+			void	deleteFix(node* x){
+				while (x != store && x->color == black)
+				{
+					node* brother = _brother(x);
+					if (x->parent->left == x){
+						if (brother->color == red){
+							brother->color = black;
+							brother->parent->color = red;
+							leftRotate(&x->parent);
+							brother = x->parent->left;
+						}
+						if (brother->color == black){
+							if (brother->left->color == black 
+									&& brother->right->color == black){
+								brother->color = red;
+								x = x->parent;
+							}
+							else if (brother->right->color == black){
+								brother->color = red;
+								brother->left->color = black;
+								rightRotate(&brother);
+								brother = x->parent->right;
+							}
+							if (brother->right->color == red){
+								brother->color = brother->parent->color;
+								brother->right->color = black;
+								brother->parent->color = black;
+								leftRotate(&x->parent);
+							}
+						}
+					}
+					else  {
+						if (brother->color == red){
+							brother->color = black;
+							brother->parent->color = red;
+							rightRotate(&x->parent);
+							brother = x->parent->right;
+						}
+						if (brother->color == black){
+							if (brother->right->color == black 
+									&& brother->left->color == black){
+								brother->color = red;
+								x = x->parent;
+							}
+							else if (brother->left->color == black){
+								brother->color = red;
+								brother->right->color = black;
+								leftRotate(&brother);
+								brother = x->parent->left;
+							}
+							if (brother->left->color == red){
+								brother->color = brother->parent->color;
+								brother->left->color = black;
+								brother->parent->color = black;
+								rightRotate(&x->parent);
+							}
+						}
+					}
+				}
+				x->color = black;
 			}
 
 			void	deleteNode(const value_type& _data){
 				node* x = find(_data);
-				if (x == nil) return;
-				if (x->left == nil && x->right == nil){
-					delete x;
-					return;
-				}
-				if (x->left != nil && x->right != nil){
-					node* next = nextNode(x);
-					replaceSon(next, nil);
-					replaceNode(x, next);
-					delete x;
-					x = next;
-					return;
-				}
-				if (x->left != nil) replaceSon(x, x->left);
-				if (x->right != nil) replaceSon(x, x->right);
-				delete x;
 
-				//balancing
+				bool isBlack = x->color;
+
+				if (x == nil) return;
+				
+				node* next = nil;
+				if (x->left == nil && x->right == nil){ // not child
+					nil->parent = x->parent;
+					replaceNode(x, nil);
+					delete x;
+				}
+				else if (x->left != nil && x->right != nil){ // 2 childs
+					next = nextNode(x);
+					swapNode(x, next);
+					deleteNode(next->data);
+					isBlack = false;
+				}
+				else{ // 1 ребенок
+					next = (x->left != nil) ? x->left : x->right;
+					isBlack = next->color;
+					replaceNode(x, next);
+					next->color = black; // recolor in black
+					delete x;
+				}
+				
+				if (isBlack) deleteFix(next); //balancing
 			}
 
-			node* get_root() { return store; }
+			node* getRoot() { return store; }
 
 			void print_b(node* p, int level){
+
 				if(p != nil)
 				{
 					print_b(p->right, level + 1);
@@ -252,9 +366,10 @@ namespace ft{
 				}
 			}
 
-			void print(){
-				std::cout << "print" << std::endl;
+			void print(int i){
+				std::cout << "print "  << i << std::endl;
 				print_b(store, 0); 
+				std::cout << " ------------- " << std::endl;
 			}
 	};
 }
