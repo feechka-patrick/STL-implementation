@@ -15,7 +15,17 @@ int main()
 
     rbt.print();
 
-    rbt.check();
+    rbt.deleteNode(std::pair<const int, int>(5, 9));
+    rbt.deleteNode(std::pair<const int, int>(3, 9));
+    rbt.print();
+    rbt.deleteNode(std::pair<const int, int>(8, 9));
+    
+    rbt.print();
+
+    rbt.deleteNode(std::pair<const int, int>(7, 9));
+    rbt.deleteNode(std::pair<const int, int>(9, 9));
+    rbt.deleteNode(std::pair<const int, int>(4, 9));
+
     rbt.print();
 }
 

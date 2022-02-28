@@ -234,6 +234,8 @@ namespace ft{
 				if (x->left != nil) replaceSon(x, x->left);
 				if (x->right != nil) replaceSon(x, x->right);
 				delete x;
+
+				//balancing
 			}
 
 			node* get_root() { return store; }
