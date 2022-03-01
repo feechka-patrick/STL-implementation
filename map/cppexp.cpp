@@ -8,14 +8,14 @@ int main()
 
     //auto a = ft::pair<const int, int>(5, 9);
 
-    // rbt.insert(ft::pair<const int, int>(5, 9));
-    // rbt.insert(ft::pair<const int, int>(3, 9));
-    // rbt.insert(ft::pair<const int, int>(8, 9));
-    // rbt.insert(ft::pair<const int, int>(7, 9));
-    // rbt.insert(ft::pair<const int, int>(9, 9));
-    // rbt.insert(ft::pair<const int, int>(4, 9));
+    rbt.insert(ft::pair<const int, int>(5, 9));
+    rbt.insert(ft::pair<const int, int>(3, 9));
+    rbt.insert(ft::pair<const int, int>(8, 9));
+    rbt.insert(ft::pair<const int, int>(7, 9));
+    rbt.insert(ft::pair<const int, int>(9, 9));
+    rbt.insert(ft::pair<const int, int>(4, 9));
 
-    // rbt.print(++i);
+    rbt.print(++i);
 
     // rbt.deleteNode(ft::pair<const int, int>(5, 9));
     // rbt.print(++i);

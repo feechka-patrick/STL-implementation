@@ -186,7 +186,7 @@ namespace ft{
 				(*x)->parent = leftTree;
 			}
 
-			static node* nextNode(node* x){
+			node* nextNode(node* x){
 				x = x->right;
 				node* parent = x;
 				while (x != nil)
@@ -197,7 +197,7 @@ namespace ft{
 				return parent;
 			}
 
-			static node* prevNode(node* x){
+			node* prevNode(node* x){
 				x = x->left;
 				node* parent = x;
 				while (x != nil)
@@ -417,9 +417,7 @@ namespace ft{
 				return true;
 			}
 
-			node* root() { return root; }
-
-			node* begin()
+			node* get_root() { return root; }
 
 			void print(int i){
 				std::cout << "print "  << i << std::endl;

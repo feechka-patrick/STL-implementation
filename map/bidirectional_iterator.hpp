@@ -14,7 +14,7 @@ namespace ft {
 					const value_type*, value_type*>::type	pointer;
 			typedef typename ft::conditional<IsConst, 
 					const value_type&, value_type&>::type	reference;
-			typedef BidirectionalIterator<T, IsConst>		iterator;
+			typedef BidirectionalIterator<Node, IsConst>		iterator;
 			typedef std::ptrdiff_t							difference_type;
 			typedef std::bidirectional_iterator_tag			iterator_category;
 
@@ -37,38 +37,38 @@ namespace ft {
 
 			// ++it
 			iterator& operator++() {
-				node = ft::rbtree.nextNode(node);
+				node = ft::rbtree<>.nextNode(node);
 				return *this;
 			}
 
 			// it++
 			iterator operator++(int) {
 				iterator old = *this;
-				node = ft::rbtree.nextNode(node);
+				node = ft::rbtree<>.nextNode(node);
 				return old;
 			}
 
 			// --it
 			iterator& operator--() {
-				node = ft::rbtree.prevNode(node);
+				node = ft::rbtree<>.prevNode(node);
 				return *this;
 			}
 
 			// it--
 			iterator operator--(int) {
 				iterator old = *this;
-				node = ft::rbtree.prevNode(node);
+				node = ft::rbtree<>.prevNode(node);
 				return old;
 			}
 
 			pointer get_pointer() const { return node; }
 
-            bool operator == ( const iterator &src ) const	{ return node == src.node; }
-			bool operator != ( const iterator &src ) const	{ return node != src.node; }
-			bool operator > ( const iterator &src ) const	{ return node->data > src.node->data; }
-			bool operator < ( const iterator &src ) const	{ return node->data < src.node->data; }
-			bool operator >= ( const iterator &src ) const	{ return node->data >= src.node->data; }
-			bool operator <= ( const iterator &src ) const	{ return node->data <= src.node->data; }
+            bool operator == ( const iterator &src ) const	{ return node == src.get_pointer(); }
+			bool operator != ( const iterator &src ) const	{ return node != src.get_pointer(); }
+			bool operator > ( const iterator &src ) const	{ return node->data > src.get_pointer()->data; }
+			bool operator < ( const iterator &src ) const	{ return node->data < src.get_pointer()->data; }
+			bool operator >= ( const iterator &src ) const	{ return node->data >= src.get_pointer()->data; }
+			bool operator <= ( const iterator &src ) const	{ return node->data <= src.get_pointer()->data; }
 
 		private:
 			pointer node;
