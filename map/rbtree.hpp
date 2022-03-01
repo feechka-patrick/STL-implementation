@@ -2,134 +2,40 @@
 
 #include <iostream>
 #include "../utils.hpp"
-#include <utility> //make_pair
+#include "pair.hpp"
+#include "node.hpp"
 
 namespace ft{
-	enum colors {red, black}; 
 
-	template<typename Key, typename Data, class Allocator = std::allocator<std::pair<const Key, Data> > >
+	template< class Key, class T, class Compare = std::less<Key>,
+		class Allocator = std::allocator<ft::pair<const Key, T> > >
 	class rbtree{
 		public:
-			typedef std::pair<const Key, Data>	value_type;
-			typedef Allocator					allocator_type;
+			typedef ft::pair<const Key, T>									value_type;
+			typedef ft::t_node<value_type>									node;
+			typedef Compare													key_compare;
+			typedef typename Allocator::template rebind<node>::other		allocator_type;
 
 		private:
-			// typedef struct t_base_node{
-			// 	typedef t_base_node	bnode;
-
-			// bnode*	left;
-			// bnode*	right;
-			// bnode*	parent;
-			// colors	color;// bool мб
-
-			// 	t_base_node() : left(nullptr), right(nullptr), parent(nullptr), color(black) {}
-			// 	t_base_node(bnode* _left, bnode* _right, bnode* _parent)
-			// 		: left(_left), right(_right), parent(_parent) {}
-
-			// }	base_node;
-
-			typedef struct t_node {
-				typedef t_node node;
-
-				struct t_node*	left;
-				struct t_node*	right;
-				struct t_node*	parent;
-				colors	color;// bool мб
-				value_type	data;
-
-				t_node() : left(nullptr), right(nullptr), parent(nullptr), color(black) {}
-				t_node(node* _left, node* _right, node* _parent, value_type _data)
-					: left(_left), right(_right), parent(_parent), data(_data) {}
-
-				t_node(node* _left, node* _right, node* _parent, colors c, value_type _data)
-					: left(_left), right(_right), parent(_parent), color(c), data(_data) {
-					}
-				t_node(const node* obj)
-					: left(obj->left), right(obj->right), parent(obj->parent), color(obj->color), data(obj->data) {
-					}
-
-				void copy(const node* obj){
-					left = obj->left;
-					right = obj->right;
-					parent = obj->parent;
-					color = obj->color;
-				}
-			}	node;
-
-			node*		nil;
-			node* 		store;
+			key_compare		comp;
 			allocator_type	alloc;
+			node*			nil;
+			node* 			root;
 		
-		public:
 
-			rbtree() : nil(new node()), store(nil), alloc(allocator_type()){}
-			rbtree(const rbtree& obj) : store(obj.store), alloc(obj.alloc) {} // leaks?
-			
+		// --- UTILS -----------------------------------------------------
 
-			
 			void deleteTree(node** _x){ //posOrder
 				node* x = *_x;
 				if (x == nil) return;
 				deleteTree(&x->left);
 				deleteTree(&x->right);
-				delete x;
-			}
-			~rbtree() {
-				deleteTree(&store);
-				delete nil;
+				freeNode(x);
 			}
 			
-			void check(){
-				deleteNode(std::pair<const int, int>(5, 9));
-			}
-
-			void	leftRotate(node** x){
-				node* rightTree = (*x)->right;
-				(*x)->right = rightTree->left;
-				
-				if (rightTree->left != nil)
-					rightTree->left->parent = (*x);
-				rightTree->parent = (*x)->parent;
-				if ((*x)->parent == nil)
-					store = rightTree;
-				else if ((*x) == (*x)->parent->left)
-					(*x)->parent->left = rightTree;
-				else (*x)->parent->right = rightTree;
-				rightTree->left = (*x);
-				(*x)->parent = rightTree;
-			}
-
-			void	rightRotate(node** x){
-				node* leftTree = (*x)->left;
-				(*x)->left = leftTree->right;
-				leftTree->right->parent = (*x);
-				leftTree->right = (*x);
-				node* parentx = (*x)->parent;
-				(*x)->parent = leftTree;
-				leftTree->parent = parentx;
-				(*x) = leftTree;
-			}
-
-			node* nextNode(node* x){
-				node* parent = x;
-				x = x->right;
-				while (x != nil)
-				{
-					parent = x;
-					x = x->left;
-				}
-				return parent;
-			}
-
-			node* prevNode(node* x){
-				node* parent = x;
-				x = x->left;
-				while (x != nil)
-				{
-					parent = x;
-					x = x->right;
-				}
-				return parent;
+			void freeNode(node *x){
+				alloc.destroy(x);
+				alloc.deallocate(x, 1);
 			}
 
 			node* _uncle(node* x) {
@@ -145,7 +51,196 @@ namespace ft{
 				else return x->parent->left;
 			}
 
+			bool assign(const value_type& lhs, const value_type& rhs){
+				if (!comp(lhs, rhs) && !comp(rhs, lhs)) return true;
+				else return false;
+			}
 
+			node *find(const Key& key) {
+				return find(make_pair(key, 0));
+			}
+
+			node* find(const value_type& _data){
+				node* current = root;
+				node* parent = nullptr;
+				while(current != nil && !assign(current->data, _data)){
+					parent = current;
+					if (comp(_data, current->data))
+						current = current->left;
+					else
+						current = current->right;
+				}
+				current->parent = parent;
+				return current;
+			}
+
+			void print_b(node* p, int level){
+
+				if(p != nil)
+				{
+					print_b(p->right, level + 1);
+					for(int i = 0; i < level; i++) std::cout<<"       ";
+					std::cout << p->data.first;
+					if (p->parent) std::cout << "p:" << p->parent->data.first;
+					std::cout << "c:" << p->color << std::endl;
+					print_b(p->left,level + 1);
+				}
+			}
+
+			void replaceNode(node* x, node* newx){
+				if (newx != nil)
+					newx->parent = x->parent;
+				if (x == root) {
+					root = newx;
+					return;
+				}
+				if (x->parent->left == x)
+					x->parent->left = newx;
+				else x->parent->right = newx;
+			}
+			
+			void swapNode(node* x, node* next){
+				node* tmp = alloc.allocate(1);
+				alloc.construct(tmp, next);
+
+				replaceNode(next, tmp);
+				replaceNode(x, next);
+				next->copy(x);
+				next->left->parent = next;
+				next->right->parent = next;
+
+				replaceNode(tmp, x);
+				x->copy(tmp);
+				x->right->parent = x;
+				freeNode(tmp);
+			}
+
+		// ---------------------------------------------------------------
+		// ---------------------------------------------------------------
+
+		public:
+
+			// --- CONSTRUCTORS, destructor
+
+			rbtree() : comp(key_compare()), alloc(allocator_type()){
+				nil = alloc.allocate(1);
+				alloc.construct(nil);
+				root = nil;
+			}
+			
+			rbtree(const key_compare& _comp) : comp(_comp), alloc(allocator_type()){
+				nil = alloc.allocate(1);
+				alloc.construct(nil);
+				root = nil;
+			}
+
+			rbtree(const rbtree& obj) : comp(obj.comp), alloc(obj.alloc){
+				nil = alloc.allocate(1);
+				alloc.constuct(nil);
+				root = nil;
+
+				for (node* current = obj.begin(); current != nil; current = nextNode(current))
+					insert(current->data);
+			}
+
+			void deleteTree(){
+				deleteTree(&root);
+				root = nil;
+			}
+
+			~rbtree() {
+				deleteTree();
+				if (nil) freeNode(nil);
+					
+			}
+
+			void	leftRotate(node** x){
+				node* rightTree = (*x)->right;
+				(*x)->right = rightTree->left;
+				
+				if (rightTree->left != nil)
+					rightTree->left->parent = (*x);
+				rightTree->parent = (*x)->parent;
+				if ((*x)->parent == nil)
+					root = rightTree;
+				else if ((*x) == (*x)->parent->left)
+					(*x)->parent->left = rightTree;
+				else (*x)->parent->right = rightTree;
+				rightTree->left = (*x);
+				(*x)->parent = rightTree;
+			}
+
+			void	rightRotate(node** x){
+				node* leftTree = (*x)->left;
+				(*x)->left = leftTree->right;
+				
+				if (leftTree->right != nil)
+					leftTree->right->parent = (*x);
+				leftTree->parent = (*x)->parent;
+				if ((*x)->parent == nil)
+					root = leftTree;
+				else if ((*x) == (*x)->parent->right)
+					(*x)->parent->right = leftTree;
+				else (*x)->parent->left = leftTree;
+				leftTree->right = (*x);
+				(*x)->parent = leftTree;
+			}
+
+			static node* nextNode(node* x){
+				x = x->right;
+				node* parent = x;
+				while (x != nil)
+				{
+					parent = x;
+					x = x->left;
+				}
+				return parent;
+			}
+
+			static node* prevNode(node* x){
+				x = x->left;
+				node* parent = x;
+				while (x != nil)
+				{
+					parent = x;
+					x = x->right;
+				}
+				return parent;
+			}
+			
+			node* begin(){
+				node* current = root;
+				node* parent = current;
+				while(current != nil){
+					parent = current;
+					current = current->left;
+				}
+				return parent;
+			}
+
+			node* prebegin(){
+				nil->parent = begin();
+				return nil;
+			}
+
+			node* last(){
+				node* current = root;
+				node* parent = current;
+				while(current != nil){
+					parent = current;
+					current = current->right;
+				}
+				return parent;
+			}
+
+			node* end(){
+				nil->parent = last();
+				return nil;
+			}
+
+
+			// --- INSERT
+			
 			void 	insertFix(node* x){
 				while(x->parent->color == red){
 					node* uncle = _uncle(x);
@@ -196,71 +291,38 @@ namespace ft{
 						}
 					}
 				}
-				store->color = black;
+				root->color = black;
 			}
 
-			void	insert(const value_type& _data){
-				node* current = store;
-				node* x = new node(nil, nil, nil, red, _data);
+			ft::pair<node*, bool>	insert(const value_type& _data){
+				node* current = find(_data);
+				if (current != nil) return ft::make_pair(current, false);
 
-				if (current == nil){
+				node* x = alloc.allocate(1);
+				alloc.construct(x, nil, nil, nil, red, _data);
+
+				if (root == nil){
 					x->color = black;
-					store = x;
-					return;
+					root = x;
+					return ft::make_pair(root, true);
 				}
 				
-				node* parent = nullptr;
-				while(current != nil){
-					parent = current;
-					if (_data.first < current->data.first)
-						current = current->left;
-					else
-						current = current->right;
-				}
 
-				x->parent = parent;		
-				if (_data.first < parent->data.first)
-					parent->left = x;
+				x->parent = current->parent;	
+				if (comp(_data, x->parent->data))
+					x->parent->left = x;
 				else 
-					parent->right = x;
+					x->parent->right = x;
 				
-				return insertFix(x);
+				insertFix(x);
+				return ft::make_pair(x, true);
 			}
 
-			//node *find(const Key& key)
-			node* find(const value_type& _data){
-				node* current = store;
-				node* parent = nullptr;
-				while(current != nil && current->data.first != _data.first){
-					parent = current;
-					if (_data.first < current->data.first)
-						current = current->left;
-					else
-						current = current->right;
-				}
-				return current;
-			}
+			// --- DELETE
 
-			void replaceNode(node* x, node* newx){
-				if (newx != nil)
-					newx->parent = x->parent;
-				if (x == store) {
-					store = newx;
-					return;
-				}
-				if (x->parent->left == x)
-					x->parent->left = newx;
-				else x->parent->right = newx;
-			}
-			void swapNode(node* x, node* next){
-				value_type tmp = std::make_pair<const Key, Data>(x->data.first, x->data.second);
-				//free pairs
-				x->data = std::make_pair<const Key, Data>(next->data.first, next->data.second);
-				next->data = std::make_pair<const Key, Data>(tmp.first, tmp.second);
-			}
 
 			void	deleteFix(node* x){
-				while (x != store && x->color == black)
+				while (x != root && x->color == black)
 				{
 					node* brother = _brother(x);
 					if (x->parent->left == x){
@@ -321,23 +383,26 @@ namespace ft{
 				x->color = black;
 			}
 
-			void	deleteNode(const value_type& _data){
+			bool	deleteNode(const value_type& _data){
 				node* x = find(_data);
+				return deleteNode(x);
+			}
 
+			bool	deleteNode(node* x){
 				bool isBlack = x->color;
 
-				if (x == nil) return;
+				if (x == nil) return false;
 				
 				node* next = nil;
 				if (x->left == nil && x->right == nil){ // not child
 					nil->parent = x->parent;
 					replaceNode(x, nil);
-					delete x;
+					freeNode(x);
 				}
 				else if (x->left != nil && x->right != nil){ // 2 childs
 					next = nextNode(x);
 					swapNode(x, next);
-					deleteNode(next->data);
+					deleteNode(x);
 					isBlack = false;
 				}
 				else{ // 1 ребенок
@@ -345,30 +410,20 @@ namespace ft{
 					isBlack = next->color;
 					replaceNode(x, next);
 					next->color = black; // recolor in black
-					delete x;
+					freeNode(x);
 				}
 				
 				if (isBlack) deleteFix(next); //balancing
+				return true;
 			}
 
-			node* getRoot() { return store; }
+			node* root() { return root; }
 
-			void print_b(node* p, int level){
-
-				if(p != nil)
-				{
-					print_b(p->right, level + 1);
-					for(int i = 0; i < level; i++) std::cout<<"       ";
-					std::cout << p->data.first;
-					if (p->parent) std::cout << "p:" << p->parent->data.first;
-					std::cout << "c:" << p->color << std::endl;
-					print_b(p->left,level + 1);
-				}
-			}
+			node* begin()
 
 			void print(int i){
 				std::cout << "print "  << i << std::endl;
-				print_b(store, 0); 
+				print_b(root, 0); 
 				std::cout << " ------------- " << std::endl;
 			}
 	};
