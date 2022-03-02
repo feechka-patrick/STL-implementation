@@ -17,24 +17,23 @@ int main()
 
     rbt.print(++i);
 
-    // rbt.deleteNode(ft::pair<const int, int>(5, 9));
-    // rbt.print(++i);
-    // rbt.deleteNode(ft::pair<const int, int>(3, 9));
-    // rbt.print(++i);
+    rbt.erase(5);
+    rbt.print(++i);
 
-    // rbt.deleteNode(ft::pair<const int, int>(8, 9));
-    // rbt.print(++i);
+    rbt.erase(3);
+    rbt.print(++i);
 
-    // rbt.deleteNode(ft::pair<const int, int>(7, 9));
-    // rbt.print(++i);
+    rbt.erase(3);
+    rbt.print(++i);
 
-    // rbt.deleteNode(ft::pair<const int, int>(9, 9));
-    // rbt.print(++i);
+    rbt.erase(8);
+    rbt.print(++i);
 
-    // rbt.deleteNode(ft::pair<const int, int>(4, 9));
+    rbt.erase(7);
+    rbt.print(++i);
 
-    // rbt.print(++i);
-    // rbt.deleteNode(ft::pair<const int, int>(4, 9));
+    rbt.erase(9);
+    rbt.print(++i);
 }
 
 //leaks --atExit -- ./a.out

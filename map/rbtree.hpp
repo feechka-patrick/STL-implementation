@@ -19,8 +19,8 @@ namespace ft{
 		private:
 			key_compare		comp;
 			allocator_type	alloc;
-			node*			nil;
 			node* 			root;
+			static node*	nil;
 		
 
 		// --- UTILS -----------------------------------------------------
@@ -123,20 +123,20 @@ namespace ft{
 			// --- CONSTRUCTORS, destructor
 
 			rbtree() : comp(key_compare()), alloc(allocator_type()){
-				nil = alloc.allocate(1);
-				alloc.construct(nil);
+				//nil = alloc.allocate(1);
+				//alloc.construct(nil);
 				root = nil;
 			}
 			
 			rbtree(const key_compare& _comp) : comp(_comp), alloc(allocator_type()){
-				nil = alloc.allocate(1);
-				alloc.construct(nil);
+				//nil = alloc.allocate(1);
+				//alloc.construct(nil);
 				root = nil;
 			}
 
 			rbtree(const rbtree& obj) : comp(obj.comp), alloc(obj.alloc){
-				nil = alloc.allocate(1);
-				alloc.constuct(nil);
+				//nil = alloc.allocate(1);
+				//alloc.construct(nil);
 				root = nil;
 
 				for (node* current = obj.begin(); current != nil; current = nextNode(current))
@@ -186,7 +186,7 @@ namespace ft{
 				(*x)->parent = leftTree;
 			}
 
-			node* nextNode(node* x){
+			static node* nextNode(node* x){
 				x = x->right;
 				node* parent = x;
 				while (x != nil)
@@ -197,7 +197,7 @@ namespace ft{
 				return parent;
 			}
 
-			node* prevNode(node* x){
+			static node* prevNode(node* x){
 				x = x->left;
 				node* parent = x;
 				while (x != nil)
@@ -299,7 +299,7 @@ namespace ft{
 				if (current != nil) return ft::make_pair(current, false);
 
 				node* x = alloc.allocate(1);
-				alloc.construct(x, nil, nil, nil, red, _data);
+				alloc.construct(x, node(nil, nil, nil, red, _data));
 
 				if (root == nil){
 					x->color = black;
@@ -425,4 +425,7 @@ namespace ft{
 				std::cout << " ------------- " << std::endl;
 			}
 	};
+
+	template< class Key, class T, class Compare, class Allocator >
+	ft::t_node<ft::pair<const Key, T> >* rbtree<Key, T, Compare, Allocator>::nil = new t_node<ft::pair<const Key, T> >();
 }

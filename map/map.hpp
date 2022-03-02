@@ -15,22 +15,22 @@ namespace ft{
 	{
 		public:
 			//	-- MEMBER TYPES
-			typedef Key												key_type;
-			typedef T												mapped_type;
-			typedef ft::pair<const Key, T>							value_type;
-			typedef std::size_t										size_type;
-			typedef std::ptrdiff_t									difference_type;
-			typedef Compare											key_compare;
-			typedef Allocator										allocator_type;
-			typedef value_type&										reference;
-			typedef const value_type&								const_reference;
-			typedef typename Allocator::pointer						pointer;
-			typedef typename Allocator::const_pointer				const_pointer;
-			typedef ft::t_node<value_type>							node;
-			typedef typename ft::BidirectionalIterator<node>		iterator;
-			typedef typename ft::BidirectionalIterator<node, true>	const_iterator;
-			typedef ft::reverse_iterator<iterator>					reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+			typedef Key																	key_type;
+			typedef T																	mapped_type;
+			typedef ft::pair<const Key, T>												value_type;
+			typedef std::size_t															size_type;
+			typedef std::ptrdiff_t														difference_type;
+			typedef Compare																key_compare;
+			typedef Allocator															allocator_type;
+			typedef value_type&															reference;
+			typedef const value_type&													const_reference;
+			typedef typename Allocator::pointer											pointer;
+			typedef typename Allocator::const_pointer									const_pointer;
+			typedef ft::t_node<value_type>												node;
+			typedef typename ft::BidirectionalIterator<key_type, mapped_type>		iterator;
+			typedef typename ft::BidirectionalIterator<key_type, mapped_type, true>	const_iterator;
+			typedef ft::reverse_iterator<iterator>										reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 
 
 			//	-- MEMBER CLASSES
@@ -146,7 +146,8 @@ namespace ft{
 			// ------------------------------
 
 			void erase( iterator pos ){
-				if (rbt.deleteNode(*pos)) _size--;
+				value_type data = *pos;
+				if (rbt.deleteNode(data)) _size--;
 			}
 
 			void erase( iterator first, iterator last ){
@@ -183,10 +184,10 @@ namespace ft{
 				node* end = rbt.end();
 
 				while (tmp != end) {
-					if (key == tmp->data->first)
+					if (key == tmp->data.first)
 						return iterator(tmp);
 					else
-						tmp = kcomp(key, tmp->value->first) ? tmp->left : tmp->right;
+						tmp = kcomp(key, tmp->data.first) ? tmp->left : tmp->right;
 				}
 				return this->end();
 			}
@@ -196,10 +197,10 @@ namespace ft{
 				node* end = rbt.end();
 
 				while (tmp != end) {
-					if (key == tmp->data->first)
+					if (key == tmp->data.first)
 						return iterator(tmp);
 					else
-						tmp = kcomp(key, tmp->value->first) ? tmp->left : tmp->right;
+						tmp = kcomp(key, tmp->data.first) ? tmp->left : tmp->right;
 				}
 				return this->end();
 			}
@@ -267,46 +268,40 @@ namespace ft{
 
 	};
 
-	template< class Key, class T, class Compare = std::less<Key>,
-		class Alloc = std::allocator<ft::pair<const Key, T> > > 
-	bool operator==( const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs )
+	template< class Key, class T > 
+	bool operator==( const map<Key, T>& lhs, const map<Key, T>& rhs )
 	{
 		return (lhs.size() == rhs.size() 
 			&& std::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 
-	template< class Key, class T, class Compare = std::less<Key>,
-		class Alloc = std::allocator<ft::pair<const Key, T> > > 
-	bool operator!=( const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs )
+	template< class Key, class T > 
+	bool operator!=( const ft::map<Key, T>& lhs, const ft::map<Key, T>& rhs )
 	{
 		return !(lhs.size() == rhs.size() 
 			&& std::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 
-	template< class Key, class T, class Compare = std::less<Key>,
-		class Alloc = std::allocator<ft::pair<const Key, T> > > 
-	bool operator<( const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs )
+	template< class Key, class T > 
+	bool operator<( const ft::map<Key, T>& lhs, const ft::map<Key, T>& rhs )
 	{
 		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
 
-	template< class Key, class T, class Compare = std::less<Key>,
-		class Alloc = std::allocator<ft::pair<const Key, T> > > 
-	bool operator<=( const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs )
+	template< class Key, class T > 
+	bool operator<=( const ft::map<Key, T>& lhs, const ft::map<Key, T>& rhs )
 	{
 		return !ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end());
 	}
 
-	template< class Key, class T, class Compare = std::less<Key>,
-		class Alloc = std::allocator<ft::pair<const Key, T> > > 
-	bool operator>( const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs )
+	template< class Key, class T > 
+	bool operator>( const ft::map<Key, T>& lhs, const ft::map<Key, T>& rhs )
 	{
 		return ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end());
 	}
 
-	template< class Key, class T, class Compare = std::less<Key>,
-		class Alloc = std::allocator<ft::pair<const Key, T> > > 
-	bool operator>=( const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs )
+	template< class Key, class T > 
+	bool operator>=( const ft::map<Key, T>& lhs, const ft::map<Key, T>& rhs )
 	{
 		return !ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
