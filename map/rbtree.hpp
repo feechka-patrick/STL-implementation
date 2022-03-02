@@ -20,11 +20,12 @@ namespace ft{
 			key_compare		comp;
 			allocator_type	alloc;
 			node* 			root;
-			static node*	nil;
+			node*			nil;
 		
 
 		// --- UTILS -----------------------------------------------------
 
+			
 			void deleteTree(node** _x){ //posOrder
 				node* x = *_x;
 				if (x == nil) return;
@@ -70,7 +71,6 @@ namespace ft{
 					else
 						current = current->right;
 				}
-				current->parent = parent;
 				return current;
 			}
 
@@ -115,31 +115,34 @@ namespace ft{
 				freeNode(tmp);
 			}
 
+			void	copyTree( node* node ) {
+				if ( !node->left->isNil )
+					copyTree( node->left );
+				if ( !node->isNil )
+					insert( node->data );
+				if ( !node->right->isNil )
+					copyTree( node->right );
+			}
+
 		// ---------------------------------------------------------------
 		// ---------------------------------------------------------------
 
 		public:
 
 			// --- CONSTRUCTORS, destructor
-
-			rbtree() : comp(key_compare()), alloc(allocator_type()){
-				//nil = alloc.allocate(1);
-				//alloc.construct(nil);
-				root = nil;
-			}
 			
 			rbtree(const key_compare& _comp) : comp(_comp), alloc(allocator_type()){
-				//nil = alloc.allocate(1);
-				//alloc.construct(nil);
+				nil = alloc.allocate(1);
+				alloc.construct(nil);
 				root = nil;
 			}
 
 			rbtree(const rbtree& obj) : comp(obj.comp), alloc(obj.alloc){
-				//nil = alloc.allocate(1);
-				//alloc.construct(nil);
+				nil = alloc.allocate(1);
+				alloc.construct(nil);
 				root = nil;
 
-				for (node* current = obj.begin(); current != nil; current = nextNode(current))
+				for (node* current = obj.begin(); current->isNil == false; current = nextNode(current))
 					insert(current->data);
 			}
 
@@ -147,68 +150,95 @@ namespace ft{
 				deleteTree(&root);
 				root = nil;
 			}
+			
+
+			rbtree& operator=( const rbtree& other ){
+				deleteTree();
+				copyTree(other.get_root());
+				return *this;
+			}
+
 
 			~rbtree() {
 				deleteTree();
-				if (nil) freeNode(nil);
-					
+				freeNode(nil);					
 			}
 
-			void	leftRotate(node** x){
-				node* rightTree = (*x)->right;
-				(*x)->right = rightTree->left;
-				
-				if (rightTree->left != nil)
-					rightTree->left->parent = (*x);
-				rightTree->parent = (*x)->parent;
-				if ((*x)->parent == nil)
-					root = rightTree;
-				else if ((*x) == (*x)->parent->left)
-					(*x)->parent->left = rightTree;
-				else (*x)->parent->right = rightTree;
-				rightTree->left = (*x);
-				(*x)->parent = rightTree;
-			}
+			void	leftRotate(node* x){
+				node*	rightTree = x->right;
 
-			void	rightRotate(node** x){
-				node* leftTree = (*x)->left;
-				(*x)->left = leftTree->right;
-				
-				if (leftTree->right != nil)
-					leftTree->right->parent = (*x);
-				leftTree->parent = (*x)->parent;
-				if ((*x)->parent == nil)
-					root = leftTree;
-				else if ((*x) == (*x)->parent->right)
-					(*x)->parent->right = leftTree;
-				else (*x)->parent->left = leftTree;
-				leftTree->right = (*x);
-				(*x)->parent = leftTree;
-			}
-
-			static node* nextNode(node* x){
-				x = x->right;
-				node* parent = x;
-				while (x != nil)
-				{
-					parent = x;
-					x = x->left;
+				rightTree->parent = x->parent;
+				if ( x->parent != nil ) {
+					if ( x->parent->left == x )
+						x->parent->left = rightTree;
+					else
+						x->parent->right = rightTree;
 				}
-				return parent;
+				x->right = rightTree->left;
+				if ( rightTree->left )
+					rightTree->left->parent = x;
+				x->parent = rightTree;
+				rightTree->left = x;
+				if ( x == root ) root = rightTree;
 			}
 
-			static node* prevNode(node* x){
-				x = x->left;
-				node* parent = x;
-				while (x != nil)
-				{
-					parent = x;
+			void	rightRotate(node* x){
+				node*	leftTree = x->left;
+
+				leftTree->parent = x->parent;
+				if ( x->parent ) {
+					if ( x->parent->left == x )
+						x->parent->left = leftTree;
+					else
+						x->parent->right = leftTree;
+				}
+				x->left = leftTree->right;
+				if ( leftTree->right )
+					leftTree->right->parent = x;
+				x->parent = leftTree;
+				leftTree->right = x;
+				if ( x == root ) root = leftTree;
+			}
+
+			node* nextNode(node* x){
+				if (x->right->isNil == false){
+					node* parent = x;
 					x = x->right;
+					while (x->isNil == false)
+					{
+						parent = x;
+						x = x->left;
+					}
+					return parent;
 				}
-				return parent;
+				node* y = x->parent;
+				while (y->isNil == false && x == y->right){
+					x = y;
+					y = y->parent;
+				}
+				return y;
+			}
+
+			node* prevNode(node* x){
+				if (x->left->isNil == false){
+					node* parent = x;
+					x = x->left;
+					while (x->isNil == false)
+					{
+						parent = x;
+						x = x->right;
+					}
+					return parent;
+				}
+				node* y = x->parent;
+				while (y->isNil == false && x == y->left){
+					x = y;
+					y = y->parent;
+				}
+				return y;
 			}
 			
-			node* begin(){
+			node* begin() const{
 				node* current = root;
 				node* parent = current;
 				while(current != nil){
@@ -218,12 +248,11 @@ namespace ft{
 				return parent;
 			}
 
-			node* prebegin(){
-				nil->parent = begin();
+			node* prebegin() const{
 				return nil;
 			}
 
-			node* last(){
+			node* last() const{
 				node* current = root;
 				node* parent = current;
 				while(current != nil){
@@ -233,8 +262,7 @@ namespace ft{
 				return parent;
 			}
 
-			node* end(){
-				nil->parent = last();
+			node* end() const{
 				return nil;
 			}
 
@@ -258,12 +286,14 @@ namespace ft{
 						//---- uncle black
 
 						else if (uncle->color == black){
-							if (x->parent->right == x)
-								leftRotate(&x->parent);
-							rightRotate(&uncle->parent);
-							uncle->parent->parent->color = black;
-							uncle->parent->parent->left->color = red;
-							uncle->parent->parent->right->color = red;
+							if (x->parent->right == x){
+								leftRotate(x->parent);
+								x = x->left;
+							}
+							rightRotate(x->parent->parent);
+							x->parent->color = black;
+							x->parent->left->color = red;
+							x->parent->right->color = red;
 							return;
 						}
 					}
@@ -281,12 +311,14 @@ namespace ft{
 						//---- uncle black
 
 						else if (uncle->color == black){
-							if (x->parent->left == x)
-								rightRotate(&x->parent);
-							leftRotate(&uncle->parent);
-							uncle->parent->parent->color = black;
-							uncle->parent->parent->left->color = red;
-							uncle->parent->parent->right->color = red;
+							if (x->parent->left == x){
+								rightRotate(x->parent);
+								x = x->right;
+							}
+							leftRotate(x->parent->parent);
+							x->parent->color = black;
+							x->parent->left->color = red;
+							x->parent->right->color = red;
 							return;
 						}
 					}
@@ -296,24 +328,33 @@ namespace ft{
 
 			ft::pair<node*, bool>	insert(const value_type& _data){
 				node* current = find(_data);
-				if (current != nil) return ft::make_pair(current, false);
+				if (current->isNil == false) return ft::make_pair(current, false);
 
 				node* x = alloc.allocate(1);
 				alloc.construct(x, node(nil, nil, nil, red, _data));
 
-				if (root == nil){
+				if (root->isNil == true){
 					x->color = black;
 					root = x;
 					return ft::make_pair(root, true);
 				}
 				
+				current = root;
+				node* parent = current;
+				while (current->isNil == false)
+				{
+					parent = current;
+					if (comp(_data, current->data))
+						current = current->left;
+					else
+						current = current->right;
+				}
 
-				x->parent = current->parent;	
-				if (comp(_data, x->parent->data))
-					x->parent->left = x;
+				if (comp(_data, parent->data))
+					parent->left = x;
 				else 
-					x->parent->right = x;
-				
+					parent->right = x;
+				x->parent = parent;
 				insertFix(x);
 				return ft::make_pair(x, true);
 			}
@@ -329,7 +370,7 @@ namespace ft{
 						if (brother->color == red){
 							brother->color = black;
 							brother->parent->color = red;
-							leftRotate(&x->parent);
+							leftRotate(x->parent);
 							brother = x->parent->left;
 						}
 						if (brother->color == black){
@@ -341,14 +382,14 @@ namespace ft{
 							else if (brother->right->color == black){
 								brother->color = red;
 								brother->left->color = black;
-								rightRotate(&brother);
+								rightRotate(brother);
 								brother = x->parent->right;
 							}
 							if (brother->right->color == red){
 								brother->color = brother->parent->color;
 								brother->right->color = black;
 								brother->parent->color = black;
-								leftRotate(&x->parent);
+								leftRotate(x->parent);
 							}
 						}
 					}
@@ -356,7 +397,7 @@ namespace ft{
 						if (brother->color == red){
 							brother->color = black;
 							brother->parent->color = red;
-							rightRotate(&x->parent);
+							rightRotate(x->parent);
 							brother = x->parent->right;
 						}
 						if (brother->color == black){
@@ -368,14 +409,14 @@ namespace ft{
 							else if (brother->left->color == black){
 								brother->color = red;
 								brother->right->color = black;
-								leftRotate(&brother);
+								leftRotate(brother);
 								brother = x->parent->left;
 							}
 							if (brother->left->color == red){
 								brother->color = brother->parent->color;
 								brother->left->color = black;
 								brother->parent->color = black;
-								rightRotate(&x->parent);
+								rightRotate(x->parent);
 							}
 						}
 					}
@@ -417,7 +458,7 @@ namespace ft{
 				return true;
 			}
 
-			node* get_root() { return root; }
+			node* get_root() const { return root; }
 
 			void print(int i){
 				std::cout << "print "  << i << std::endl;
@@ -426,6 +467,6 @@ namespace ft{
 			}
 	};
 
-	template< class Key, class T, class Compare, class Allocator >
-	ft::t_node<ft::pair<const Key, T> >* rbtree<Key, T, Compare, Allocator>::nil = new t_node<ft::pair<const Key, T> >();
+	// template< class Key, class T, class Compare, class Allocator >
+	// ft::t_node<ft::pair<const Key, T> >* rbtree<Key, T, Compare, Allocator>::nil = new t_node<ft::pair<const Key, T> >();
 }

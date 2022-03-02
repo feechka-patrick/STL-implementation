@@ -1462,17 +1462,18 @@ void std_modifiers_test() {
 
 int main()
 {
-	// std_constructors_capacity_test();
-	// std_operator_assignment_test();
-	// std_iterator_test();
-	// std_el_access_test();
+	std_constructors_capacity_test();
+	std_operator_assignment_test();
+	std_iterator_test();
+	std_el_access_test();
 
-	//  std_modifiers_test();
+	 std_modifiers_test();
 
 
 	// const_iterators();
 	// reverse_iterators();
-	// std_relational_operators();
-	// const_iter_with_iter();
+
+	std_relational_operators();
+	const_iter_with_iter();
 	return 0;
 }

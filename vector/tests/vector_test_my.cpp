@@ -1460,10 +1460,10 @@ void ft_modifiers_test() {
 
 int main(void)
 {
-	// ft_constructors_capacity_test();
-	// ft_operator_assignment();
-	// ft_iterator_test();
-	// ft_el_access_test();
+	ft_constructors_capacity_test();
+	ft_operator_assignment();
+	ft_iterator_test();
+	ft_el_access_test();
 	// // дописать в reverse итератор операторы сравнения
 
 	//  ft_modifiers_test();//+

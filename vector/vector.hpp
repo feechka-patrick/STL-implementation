@@ -9,7 +9,6 @@
 #include <algorithm> // ft::lexicographical_compare, std::copy_backward
 #include <limits> // std::numeric_limits
 
-
 namespace ft
 {
 	template <class T, class Allocator = std::allocator<T> >
@@ -341,9 +340,12 @@ namespace ft
 			}
 
 			iterator erase( iterator first, iterator last ){
-				size_type count = std::distance(first, last);
-				while (count--)
-					this->erase(first);
+				iterator tmp;
+				for ( ; first != last; ++first )
+				{
+					tmp = first;
+					erase(tmp);
+				}
 				return first;
 			}
 

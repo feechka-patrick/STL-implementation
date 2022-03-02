@@ -7,11 +7,11 @@
 
 namespace ft {
 
-	template<typename Key, typename Value, bool IsConst = false>
+	template<typename Value, bool IsConst = false>
 	class BidirectionalIterator {
 		public:
-			typedef ft::pair<const Key, Value>					value_type;
-			typedef t_node<value_type>*							node_type;
+			typedef Value									value_type;
+			typedef t_node<value_type>*						node_type;
 			typedef typename ft::conditional<IsConst,
 					const value_type*, value_type*>::type	pointer;
 			typedef typename ft::conditional<IsConst, 
@@ -20,13 +20,13 @@ namespace ft {
 			// typedef value_type&	reference;
 
 
-			typedef BidirectionalIterator<Key, Value, IsConst>		iterator;
+			typedef BidirectionalIterator<Value, IsConst>		iterator;
 			typedef std::ptrdiff_t							difference_type;
 			typedef std::bidirectional_iterator_tag			iterator_category;
 
 			BidirectionalIterator() : node() {}
 			BidirectionalIterator(node_type _node) : node(_node) {}
-			BidirectionalIterator(const BidirectionalIterator<Key, Value>& other) :
+			BidirectionalIterator(const BidirectionalIterator<Value>& other) :
 				node(other.get_pointer()) {}
 			
 			iterator& operator= (const iterator& other)
@@ -39,31 +39,31 @@ namespace ft {
 
 			reference operator*() const { return (node->data); }
 
-			pointer operator->() { return std::addressof(node->data); }
+			pointer operator->() const { return &node->data; }
 
 			// ++it
 			iterator& operator++() {
-				node = ft::rbtree<Key, Value>::nextNode(node);
+				node = nextNode(node);
 				return *this;
 			}
 
 			// it++
 			iterator operator++(int) {
 				iterator old = *this;
-				node = ft::rbtree<Key, Value>::nextNode(node);
+				node = nextNode(node);
 				return old;
 			}
 
 			// --it
 			iterator& operator--() {
-				node = ft::rbtree<Key, Value>::prevNode(node);
+				node = prevNode(node);
 				return *this;
 			}
 
 			// it--
 			iterator operator--(int) {
 				iterator old = *this;
-				node = ft::rbtree<Key, Value>::prevNode(node);
+				node = prevNode(node);
 				return old;
 			}
 
@@ -78,6 +78,44 @@ namespace ft {
 
 		private:
 			node_type node;
+
+			node_type nextNode(node_type x){
+				if (x->right->isNil == false){
+					node_type parent = x;
+					x = x->right;
+					while (x->isNil == false)
+					{
+						parent = x;
+						x = x->left;
+					}
+					return parent;
+				}
+				node_type y = x->parent;
+				while (y->isNil == false && x == y->right){
+					x = y;
+					y = y->parent;
+				}
+				return y;
+			}
+
+			node_type prevNode(node_type x){
+				if (x->left->isNil == false){
+					node_type parent = x;
+					x = x->left;
+					while (x->isNil == false)
+					{
+						parent = x;
+						x = x->right;
+					}
+					return parent;
+				}
+				node_type y = x->parent;
+				while (y->isNil == false && x == y->left){
+					x = y;
+					y = y->parent;
+				}
+				return y;
+			}
 	};
 
 }

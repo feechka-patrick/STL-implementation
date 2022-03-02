@@ -7,6 +7,7 @@
 #include "bidirectional_iterator.hpp"
 #include "node.hpp"
 #include "../reverse_iterator.hpp"
+#include <map>
 
 namespace ft{
 	template< class Key, class T, class Compare = std::less<Key>,
@@ -27,10 +28,13 @@ namespace ft{
 			typedef typename Allocator::pointer											pointer;
 			typedef typename Allocator::const_pointer									const_pointer;
 			typedef ft::t_node<value_type>												node;
-			typedef typename ft::BidirectionalIterator<key_type, mapped_type>		iterator;
-			typedef typename ft::BidirectionalIterator<key_type, mapped_type, true>	const_iterator;
-			typedef ft::reverse_iterator<iterator>										reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>								const_reverse_iterator;
+			typedef typename ft::BidirectionalIterator<value_type>		iterator;
+			typedef typename ft::BidirectionalIterator<value_type, true>	const_iterator;
+
+			// typedef typename std::map<Key, T, Compare, Allocator>::iterator				iterator;
+			// typedef typename std::map<Key, T, Compare, Allocator>::const_iterator		const_iterator;
+			typedef std::reverse_iterator<iterator>										reverse_iterator;
+			typedef std::reverse_iterator<const_iterator>								const_reverse_iterator;
 
 
 			//	-- MEMBER CLASSES
@@ -47,7 +51,7 @@ namespace ft{
 					}
 				
 				protected:
-					key_compare	comp;
+ 					key_compare	comp;
 
 					value_compare(const key_compare c) : comp(c) {}
 			};
@@ -76,11 +80,20 @@ namespace ft{
 					}
 			}
 
-	 		map( const map& other ) {}
+	 		map( const map& other ) : alloc(other.alloc), kcomp(other.kcomp),
+				_size(other._size), rbt(other.rbt) {}
 
 			~map(){}
-			
-			map& operator=( const map& other ){}
+
+			map& operator=( const map& other ){
+				if ( this != &other ) {
+					alloc = other.alloc;
+					kcomp = other.kcomp;
+					_size = other._size;
+					rbt = other.rbt;
+				}
+				return *this; 
+			}
 
 			allocator_type get_allocator() const { return alloc; }
 
@@ -112,11 +125,11 @@ namespace ft{
 			iterator end() { return iterator(rbt.end()); }
 			const_iterator end() const { return const_iterator(rbt.end()); }
 
-			reverse_iterator rbegin() { return iterator(rbt.last()); }
-			const_reverse_iterator rbegin() const { return const_iterator(rbt.last()); }
+			reverse_iterator rbegin() { return reverse_iterator(rbt.last()); }
+			const_reverse_iterator rbegin() const { return const_reverse_iterator(rbt.last()); }
 
-			reverse_iterator rend() { return iterator(rbt.prebegin()); }
-			const_reverse_iterator rend() const { return const_iterator(rbt.prebegin()); }
+			reverse_iterator rend() { return reverse_iterator(rbt.prebegin()); }
+			const_reverse_iterator rend() const { return const_reverse_iterator(rbt.prebegin()); }
 
 			// -- MODIFIERS ------------------
 
@@ -129,6 +142,7 @@ namespace ft{
 
 			ft::pair<iterator, bool> insert( const value_type& value ){
 				ft::pair<node*, bool> p = rbt.insert(value);
+				_size++;
 				return ft::make_pair(iterator(p.first), p.second);
 			}
 
