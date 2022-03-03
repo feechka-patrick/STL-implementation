@@ -39,7 +39,7 @@ namespace ft {
 
 			reference operator*() const { return (node->data); }
 
-			pointer operator->() const { return &node->data; }
+			pointer operator->() const { return &(node->data); }
 
 			// ++it
 			iterator& operator++() {
@@ -68,6 +68,7 @@ namespace ft {
 			}
 
 			node_type get_pointer() const { return node; }
+			pointer	get_value() const { return node->data; }
 
             bool operator == ( const iterator &src ) const	{ return node == src.get_pointer(); }
 			bool operator != ( const iterator &src ) const	{ return node != src.get_pointer(); }
@@ -80,6 +81,10 @@ namespace ft {
 			node_type node;
 
 			node_type nextNode(node_type x){
+				if (x->isNil) {
+					if (x->parent) return x->parent;
+					return x->left;
+				}
 				if (x->right->isNil == false){
 					node_type parent = x;
 					x = x->right;
@@ -90,15 +95,21 @@ namespace ft {
 					}
 					return parent;
 				}
+				node_type tmp = x;
 				node_type y = x->parent;
 				while (y->isNil == false && x == y->right){
 					x = y;
 					y = y->parent;
 				}
+				if (y->isNil) y->parent = tmp;
 				return y;
 			}
 
 			node_type prevNode(node_type x){
+				if (x->isNil) {
+					if (x->parent) return x->parent;
+					return x->right;
+				}
 				if (x->left->isNil == false){
 					node_type parent = x;
 					x = x->left;
@@ -109,11 +120,13 @@ namespace ft {
 					}
 					return parent;
 				}
+				node_type tmp = x;
 				node_type y = x->parent;
 				while (y->isNil == false && x == y->left){
 					x = y;
 					y = y->parent;
 				}
+				if (y->isNil) y->parent = tmp;
 				return y;
 			}
 	};

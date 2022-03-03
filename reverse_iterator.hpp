@@ -13,7 +13,7 @@ namespace ft{
 			typedef typename Iter::difference_type				difference_type;
 			typedef typename Iter::pointer						pointer;
 			typedef typename Iter::reference					reference;
-			typedef typename std::random_access_iterator_tag	iterator_category;
+			typedef typename Iter::iterator_category			iterator_category;
 			
 			// -- CONSTRUCTORS
 
@@ -37,7 +37,7 @@ namespace ft{
 			iterator_type base() const { return it; }
 
 			reference operator*() const { return *it; }
-			pointer operator->() const { return it.get_pointer(); }
+			pointer operator->() const { return it.operator->(); }
 
 			value_type operator[]( difference_type n ) const {
 				reverse_iterator tmp(it);
@@ -59,12 +59,12 @@ namespace ft{
 			reverse_iterator operator++( int ) {
 				iterator_type old_it = it;
 				it--;
-				return old_it;
+				return reverse_iterator(old_it);
 			}
 			reverse_iterator operator--( int ) {
 				iterator_type old_it = it;
 				it++;
-				return old_it;
+				return reverse_iterator(old_it);
 			}
 
 			reverse_iterator operator+( difference_type n ) const { 

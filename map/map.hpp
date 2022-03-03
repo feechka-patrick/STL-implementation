@@ -33,8 +33,8 @@ namespace ft{
 
 			// typedef typename std::map<Key, T, Compare, Allocator>::iterator				iterator;
 			// typedef typename std::map<Key, T, Compare, Allocator>::const_iterator		const_iterator;
-			typedef std::reverse_iterator<iterator>										reverse_iterator;
-			typedef std::reverse_iterator<const_iterator>								const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator>										reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 
 
 			//	-- MEMBER CLASSES
@@ -142,7 +142,7 @@ namespace ft{
 
 			ft::pair<iterator, bool> insert( const value_type& value ){
 				ft::pair<node*, bool> p = rbt.insert(value);
-				_size++;
+				if (p.second == true) _size++;
 				return ft::make_pair(iterator(p.first), p.second);
 			}
 
@@ -151,24 +151,20 @@ namespace ft{
 			template< class InputIt >
 			void insert( InputIt first, InputIt last ){
 				for ( ; first != last; ++first )
-				{
 					insert( ft::make_pair( first->first, first->second ) );
-					_size++;
-				}
 			}
 
 			// ------------------------------
 
 			void erase( iterator pos ){
-				value_type data = *pos;
-				if (rbt.deleteNode(data)) _size--;
+				if (rbt.deleteNode(*pos)) _size--;
 			}
 
 			void erase( iterator first, iterator last ){
 				iterator tmp;
-				for ( ; first != last; ++first )
+				for ( ; first != last;  )
 				{
-					tmp = first;
+					tmp = first++;
 					erase(tmp);
 				}
 			}

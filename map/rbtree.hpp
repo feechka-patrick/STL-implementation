@@ -28,7 +28,7 @@ namespace ft{
 			
 			void deleteTree(node** _x){ //posOrder
 				node* x = *_x;
-				if (x == nil) return;
+				if (x->isNil) return;
 				deleteTree(&x->left);
 				deleteTree(&x->right);
 				freeNode(x);
@@ -64,7 +64,7 @@ namespace ft{
 			node* find(const value_type& _data){
 				node* current = root;
 				node* parent = nullptr;
-				while(current != nil && !assign(current->data, _data)){
+				while(!current->isNil && !assign(current->data, _data)){
 					parent = current;
 					if (comp(_data, current->data))
 						current = current->left;
@@ -76,7 +76,7 @@ namespace ft{
 
 			void print_b(node* p, int level){
 
-				if(p != nil)
+				if(!p->isNil)
 				{
 					print_b(p->right, level + 1);
 					for(int i = 0; i < level; i++) std::cout<<"       ";
@@ -88,7 +88,7 @@ namespace ft{
 			}
 
 			void replaceNode(node* x, node* newx){
-				if (newx != nil)
+				if (!newx->isNil)
 					newx->parent = x->parent;
 				if (x == root) {
 					root = newx;
@@ -124,6 +124,18 @@ namespace ft{
 					copyTree( node->right );
 			}
 
+			void updateNIL(node* x){
+				if (comp(x->data, nil->left->data) || nil->left->isNil)
+					nil->left = x;
+				if (comp(nil->right->data, x->data) || !nil->right->isNil)
+					nil->right = x;
+			}
+
+			void updateNIL(){
+				nil->left = begin();
+				nil->right = last();
+			}
+
 		// ---------------------------------------------------------------
 		// ---------------------------------------------------------------
 
@@ -135,12 +147,14 @@ namespace ft{
 				nil = alloc.allocate(1);
 				alloc.construct(nil);
 				root = nil;
+				updateNIL();
 			}
 
 			rbtree(const rbtree& obj) : comp(obj.comp), alloc(obj.alloc){
 				nil = alloc.allocate(1);
 				alloc.construct(nil);
 				root = nil;
+				updateNIL();
 
 				for (node* current = obj.begin(); current->isNil == false; current = nextNode(current))
 					insert(current->data);
@@ -168,7 +182,7 @@ namespace ft{
 				node*	rightTree = x->right;
 
 				rightTree->parent = x->parent;
-				if ( x->parent != nil ) {
+				if ( !x->parent->isNil ) {
 					if ( x->parent->left == x )
 						x->parent->left = rightTree;
 					else
@@ -241,7 +255,7 @@ namespace ft{
 			node* begin() const{
 				node* current = root;
 				node* parent = current;
-				while(current != nil){
+				while(!current->isNil){
 					parent = current;
 					current = current->left;
 				}
@@ -255,7 +269,7 @@ namespace ft{
 			node* last() const{
 				node* current = root;
 				node* parent = current;
-				while(current != nil){
+				while(!current->isNil){
 					parent = current;
 					current = current->right;
 				}
@@ -263,6 +277,7 @@ namespace ft{
 			}
 
 			node* end() const{
+				nil->parent = nullptr;
 				return nil;
 			}
 
@@ -336,6 +351,7 @@ namespace ft{
 				if (root->isNil == true){
 					x->color = black;
 					root = x;
+					updateNIL(x);
 					return ft::make_pair(root, true);
 				}
 				
@@ -355,6 +371,9 @@ namespace ft{
 				else 
 					parent->right = x;
 				x->parent = parent;
+
+				updateNIL(x);
+				
 				insertFix(x);
 				return ft::make_pair(x, true);
 			}
@@ -447,14 +466,15 @@ namespace ft{
 					isBlack = false;
 				}
 				else{ // 1 ребенок
-					next = (x->left != nil) ? x->left : x->right;
+					next = (!x->left->isNil) ? x->left : x->right;
 					isBlack = next->color;
 					replaceNode(x, next);
 					next->color = black; // recolor in black
 					freeNode(x);
 				}
 				
-				if (isBlack) deleteFix(next); //balancing
+				//if (isBlack) deleteFix(next); //balancing
+				updateNIL();
 				return true;
 			}
 
