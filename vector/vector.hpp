@@ -44,13 +44,10 @@ namespace ft
 							const allocator_type &_alloc = allocator_type())
 							: alloc(_alloc), vsize(0), csize(0) 
 			{
-				try
-				{
+				try{
 					array = alloc.allocate(count);
 				}
-				catch(const std::exception& e)
-				{
-					this->~vector();
+				catch(const std::exception& e){
 					throw vector::MemoryException();
 				}
 				csize = count;
@@ -67,13 +64,10 @@ namespace ft
 			{
 				vsize = std::distance(first, last);
 				csize = vsize;
-				try
-				{
+				try{
 					array = alloc.allocate(csize);
 				}
-				catch(const std::exception& e)
-				{
-					this->~vector();
+				catch(const std::exception& e){
 					throw vector::MemoryException();
 				}
 				for (size_type i = 0; i < vsize; ++i) {
@@ -84,13 +78,10 @@ namespace ft
 
 			vector( const vector& other ) :  alloc(other.alloc) , vsize(0), csize(0)
 			{
-				try
-				{
+				try{
 					array = alloc.allocate(other.csize);
 				}
-				catch(const std::exception& e)
-				{
-					this->~vector();
+				catch(const std::exception& e){
 					throw vector::MemoryException();
 				}
 				csize = other.csize;
@@ -108,7 +99,7 @@ namespace ft
 				for (size_type i = 0; i < vsize; i++){
 					alloc.destroy(array + i);
 				}
-				if (csize != 0) alloc.deallocate(array, csize);
+				alloc.deallocate(array, csize);
 				array = 0;
 				vsize = 0;
 				csize = 0;
@@ -262,19 +253,20 @@ namespace ft
 			// ------------------------------------------
 
 			iterator insert( iterator pos, const T& _value ) { //1
-				size_type i = pos - this->begin();
+				size_type i = pos - begin();
 				const T value = _value;
 
 				if (pos == this->end()) {
 					this->push_back(value);
 					return this->end();
 				}
-				if (vsize == csize) reserve (2 * vsize);
+				if (vsize == csize) reserve(2 * vsize);
 				
 				pos = iterator(array + i);
 				std::copy_backward(pos, this->end(), this->end() + 1);
-				alloc.construct(array + i, value);
 				vsize++;
+
+				alloc.construct(array + i, value);
 				return pos;
 			}
 
@@ -293,15 +285,15 @@ namespace ft
 					alloc.construct(array + i, value);
 			}
 
-			void print(vector<value_type> vv) 
-			{
-				std::cout << "print current state\n";
-				for (size_t i = 0; i < vv.size(); i++) {
-					std::cout << vv[i].some_ << " ";
-				}
-				std::cout << "\nsize-> " << vv.size() << "\n";
-				std::cout << "cap -> " << vv.capacity() << "\n\n";
-			}
+			// void print(vector<value_type> vv) 
+			// {
+			// 	std::cout << "print current state\n";
+			// 	for (size_t i = 0; i < vv.size(); i++) {
+			// 		std::cout << vv[i].some_ << " ";
+			// 	}
+			// 	std::cout << "\nsize-> " << vv.size() << "\n";
+			// 	std::cout << "cap -> " << vv.capacity() << "\n\n";
+			// }
 
 			template< class InputIt>
 			void insert( iterator pos, InputIt first, InputIt last, 
@@ -313,8 +305,8 @@ namespace ft
 				ft::vector<T> value(first, last);	
 
 				const size_type count = last - first;
-				if (2 * vsize < count + vsize) reserve(count + vsize);
-				else if (csize < count + vsize) reserve(2 * vsize);
+				if (2 * csize < count + vsize) reserve(count + vsize);
+				else if (csize < count + vsize) reserve(2 * csize);
 
 				pos = iterator(array + dist);
 
@@ -334,19 +326,28 @@ namespace ft
 	
 				alloc.destroy(array + dist);
 				
-				std::copy(pos + 1, this->end(), pos);
+				pos = iterator(array + dist);
+				//std::copy((pos + 1), this->end(), pos);
+				memmove(
+					array + dist,
+					array + dist + 1,
+					sizeof(value_type) * (vsize - dist)
+				);
 				vsize--;
 				return pos;
 			}
 
 			iterator erase( iterator first, iterator last ){
 				iterator tmp;
-				for ( ; first != last; ++first )
+				size_type n = first - begin();
+
+				if (n < 0) return end();
+				for ( ; first < last;  )
 				{
-					tmp = first;
-					erase(tmp);
+					erase(first);
+					last--;
 				}
-				return first;
+				return array + n;
 			}
 
 			// ------------------------------------------
@@ -387,8 +388,8 @@ namespace ft
 				}
 
 				if (csize < count) {
-					if (2 * vsize < count) reserve(count);
-					else reserve(2 * vsize);
+					if (2 * csize < count) reserve(count);
+					else reserve(2 * csize);
 
 					for (size_type i = vsize; i < count; ++i)
 						alloc.construct(array + i, value);

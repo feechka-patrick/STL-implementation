@@ -18,6 +18,7 @@ namespace ft {
 
 			RandomAccessIterator() : arr(0) {}
 			RandomAccessIterator(pointer _arr) : arr(_arr) {}
+
 			RandomAccessIterator(const RandomAccessIterator<value_type>& other) :
 				arr(other.get_pointer()) {}
 			

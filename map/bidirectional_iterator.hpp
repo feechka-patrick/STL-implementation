@@ -70,12 +70,12 @@ namespace ft {
 			node_type get_pointer() const { return node; }
 			pointer	get_value() const { return node->data; }
 
-            bool operator == ( const iterator &src ) const	{ return node == src.get_pointer(); }
-			bool operator != ( const iterator &src ) const	{ return node != src.get_pointer(); }
-			bool operator > ( const iterator &src ) const	{ return node->data > src.get_pointer()->data; }
-			bool operator < ( const iterator &src ) const	{ return node->data < src.get_pointer()->data; }
-			bool operator >= ( const iterator &src ) const	{ return node->data >= src.get_pointer()->data; }
-			bool operator <= ( const iterator &src ) const	{ return node->data <= src.get_pointer()->data; }
+            // bool operator == ( const iterator &src ) const	{ return node == src.get_pointer(); }
+			// bool operator != ( const iterator &src ) const	{ return node != src.get_pointer(); }
+			// bool operator > ( const iterator &src ) const	{ return node->data > src.get_pointer()->data; }
+			// bool operator < ( const iterator &src ) const	{ return node->data < src.get_pointer()->data; }
+			// bool operator >= ( const iterator &src ) const	{ return node->data >= src.get_pointer()->data; }
+			// bool operator <= ( const iterator &src ) const	{ return node->data <= src.get_pointer()->data; }
 
 		private:
 			node_type node;
@@ -130,5 +130,42 @@ namespace ft {
 				return y;
 			}
 	};
+
+	template<typename T, bool IsConstL, bool IsConstR> 
+	bool operator==(const BidirectionalIterator<T, IsConstL>& lhs, const BidirectionalIterator<T, IsConstR>& rhs)
+	{
+		return lhs.get_pointer() == rhs.get_pointer();
+	}
+
+
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator!=(const BidirectionalIterator<T, IsConstL>& lhs, const BidirectionalIterator<T, IsConstR>& rhs)
+	{
+		return lhs.get_pointer() != rhs.get_pointer();
+	}
+
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator<(const BidirectionalIterator<T, IsConstL>& lhs, const BidirectionalIterator<T, IsConstR>& rhs)
+	{
+		return lhs.get_value() < rhs.get_value();
+	}
+
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator>(const BidirectionalIterator<T, IsConstL>& lhs, const BidirectionalIterator<T, IsConstR>& rhs)
+	{
+		return lhs.get_value() > rhs.get_value();
+	}
+
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator<=(const BidirectionalIterator<T, IsConstL>& lhs, const BidirectionalIterator<T, IsConstR>& rhs)
+	{
+		return lhs.get_value() <= rhs.get_value();
+	}
+
+	template<typename T, bool IsConstL, bool IsConstR>
+	bool operator>=(const BidirectionalIterator<T, IsConstL>& lhs, const BidirectionalIterator<T, IsConstR>& rhs)
+	{
+		return lhs.get_value() >= rhs.get_value();
+	}
 
 }

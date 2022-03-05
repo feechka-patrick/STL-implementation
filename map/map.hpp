@@ -46,7 +46,7 @@ namespace ft{
 					typedef value_type	first_argument_type;
 					typedef value_type	second_argument_type;
 
-					bool operator()( const value_type& lhs, const value_type& rhs ) const{
+					bool operator()( const first_argument_type& lhs, const second_argument_type& rhs ) const{
 						return comp(lhs.first, rhs.first);
 					}
 				
@@ -146,7 +146,9 @@ namespace ft{
 				return ft::make_pair(iterator(p.first), p.second);
 			}
 
-			iterator insert( iterator hint, const value_type& value );
+			// iterator insert( iterator hint, const value_type& value ){
+				
+			// }
 
 			template< class InputIt >
 			void insert( InputIt first, InputIt last ){
@@ -176,7 +178,12 @@ namespace ft{
 				return 1;
 			}
 
-			void swap( map& other ) { std::swap(rbt, other.rbt); }
+			void swap( map& other ) { 
+				rbtree_type tmp(rbt);
+				rbt.copyTree(other.rbt);
+				other.rbt.copyTree(tmp);
+				ft::swap(_size, other._size);
+			}
 
 			// -- CAPACITY -------------------
 
@@ -227,7 +234,7 @@ namespace ft{
 
 			iterator lower_bound( const Key& key ){
 				iterator it = begin();
-				while (it != end() && !kcomp(it->first, key))
+				while (it != end() && kcomp(it->first, key))
 					it++;
 				return it;
 			}

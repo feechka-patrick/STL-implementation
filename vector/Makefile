@@ -4,10 +4,8 @@ FLAGS_STD = -std=c++98
 OBJ_NAME = vector_test
 DIR_TEST = tests
 
-all: clean insert erase resize
-
-term: test
-	cat result.diff | sed -r '/\|/ s//\x1b[31m&\x1b[0m/p'
+all: clean test
+	cat result.diff | sed '/\|/ s//\x1b[31m&\x1b[0m/p'
 
 clean:
 	@echo > result.diff

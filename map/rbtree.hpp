@@ -115,19 +115,19 @@ namespace ft{
 				freeNode(tmp);
 			}
 
-			void	copyTree( node* node ) {
+			void	copyTreeByNode( node* node ) {
 				if ( !node->left->isNil )
-					copyTree( node->left );
+					copyTreeByNode( node->left );
 				if ( !node->isNil )
 					insert( node->data );
 				if ( !node->right->isNil )
-					copyTree( node->right );
+					copyTreeByNode( node->right );
 			}
 
 			void updateNIL(node* x){
 				if (comp(x->data, nil->left->data) || nil->left->isNil)
 					nil->left = x;
-				if (comp(nil->right->data, x->data) || !nil->right->isNil)
+				if (comp(nil->right->data, x->data) || nil->right->isNil)
 					nil->right = x;
 			}
 
@@ -165,10 +165,13 @@ namespace ft{
 				root = nil;
 			}
 			
+			void copyTree( const rbtree& other ){
+				deleteTree();
+				copyTreeByNode(other.get_root());
+			}
 
 			rbtree& operator=( const rbtree& other ){
-				deleteTree();
-				copyTree(other.get_root());
+				copyTree(other);
 				return *this;
 			}
 
