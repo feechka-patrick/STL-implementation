@@ -79,12 +79,12 @@ namespace ft
 			vector( const vector& other ) :  alloc(other.alloc) , vsize(0), csize(0)
 			{
 				try{
-					array = alloc.allocate(other.csize);
+					array = alloc.allocate(other.vsize);
 				}
 				catch(const std::exception& e){
 					throw vector::MemoryException();
 				}
-				csize = other.csize;
+				csize = other.vsize;
 				vsize = other.vsize;
 				for (size_type i = 0; i < vsize; ++i) {
 					alloc.construct(array + i, other[i]);
@@ -310,7 +310,6 @@ namespace ft
 
 				pos = iterator(array + dist);
 
-				
 				if (this->end() - pos > 0)
 					std::copy_backward(pos, this->end(), this->end() + count);
 				vsize += count;
@@ -339,15 +338,21 @@ namespace ft
 
 			iterator erase( iterator first, iterator last ){
 				iterator tmp;
-				size_type n = first - begin();
+				difference_type dist = first - begin();
+				difference_type difr = std::distance(first, last);
 
-				if (n < 0) return end();
-				for ( ; first < last;  )
-				{
-					erase(first);
-					last--;
-				}
-				return array + n;
+				if (dist < 0 || difr < 0) return end();
+
+				for (difference_type i = dist; i < difr + dist; ++i)
+					alloc.destroy(array + i);
+
+				memmove(
+					array + dist,
+					array + dist + difr,
+					sizeof(value_type) * (vsize - dist - difr)
+				);
+				vsize -= difr;
+				return iterator(array + dist);
 			}
 
 			// ------------------------------------------
@@ -432,18 +437,18 @@ namespace ft
 			size_type			csize; // size alocated memory		
 	};
 
-	template< class T, class Alloc >
+	template< class T1, class Alloc1, class T2, class Alloc2>
 	bool operator==( const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs )
 	{
 		return (lhs.size() == rhs.size() 
-			&& std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+			&& ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 
 	template< class T, class Alloc >
 	bool operator!=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
 	{
 		return !(lhs.size() == rhs.size() 
-			&& std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+			&& ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 
 	template< class T, class Alloc >

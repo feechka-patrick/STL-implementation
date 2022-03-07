@@ -8,6 +8,7 @@ all: clean test
 	cat result.diff | sed '/\|/ s//\x1b[31m&\x1b[0m/p'
 
 clean:
+	rm -rf result.diff
 	@echo > result.diff
 
 test:
@@ -19,5 +20,9 @@ test:
 	@-diff -y ./$(DIR_TEST)/my.output ./$(DIR_TEST)/orig.output >> result.diff
 	rm ./$(DIR_TEST)/my.output ./$(DIR_TEST)/orig.output
 
+mytest:
+	clang++ namor_vector_test.cpp -D lib=ft; ./a.out > my.output;
+	clang++ namor_vector_test.cpp -D lib=std; ./a.out > std.output;
+	diff -y std.output my.output > result.diff; cat result.diff
 fclean:
 	rm result.diff
