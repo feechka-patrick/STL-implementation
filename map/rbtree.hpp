@@ -254,6 +254,16 @@ namespace ft{
 				}
 				return y;
 			}
+
+			void swap(rbtree& x){
+				node* tmp = root;
+				root = x.get_root();
+				x.root = tmp;
+
+				tmp = nil;
+				nil = x.nil;
+				x.nil = tmp;
+			}
 			
 			node* begin() const{
 				node* current = root;
@@ -378,6 +388,40 @@ namespace ft{
 				updateNIL(x);
 				
 				insertFix(x);
+				return ft::make_pair(x, true);
+			}
+
+			ft::pair<node*, bool>	insertByHint(node* hint, const value_type& _data){
+				node* current;
+				node* parent;
+				node* x;
+
+				current = hint;
+				parent = nullptr;
+				while (!current->isNil) {
+					if (_data.first == current->data.first)
+						return ft::make_pair(current, false);
+					parent = current;
+					current = comp(_data, current->data) ?
+							current->left : current->right;
+				}
+
+				x = alloc.allocate(1);
+				alloc.construct(x, node(nil, nil, parent, red, _data));
+
+				if (parent) {
+					if (comp(_data, parent->data))
+						parent->left = x;
+					else
+						parent->right = x;
+				} else {
+					x->color = black;
+					root = x;
+				}
+
+				updateNIL(x);
+
+				//insertFix(x);
 				return ft::make_pair(x, true);
 			}
 

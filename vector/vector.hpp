@@ -79,12 +79,12 @@ namespace ft
 			vector( const vector& other ) :  alloc(other.alloc) , vsize(0), csize(0)
 			{
 				try{
-					array = alloc.allocate(other.vsize);
+					array = alloc.allocate(other.csize);
 				}
 				catch(const std::exception& e){
 					throw vector::MemoryException();
 				}
-				csize = other.vsize;
+				csize = other.csize;
 				vsize = other.vsize;
 				for (size_type i = 0; i < vsize; ++i) {
 					alloc.construct(array + i, other[i]);
@@ -109,9 +109,12 @@ namespace ft
 
 			vector& operator= (const vector& other)
 			{
-				this->~vector();
-				array = alloc.allocate(other.csize);
-				csize = other.csize;
+				clear();
+				if (other.csize > csize){
+					alloc.deallocate(array, csize);
+					array = alloc.allocate(other.csize);
+					csize = other.csize;
+				}
 				vsize = other.vsize;
 				for (size_type i = 0; i < vsize ; ++i) {
 					alloc.construct(array + i, other[i]);
@@ -125,8 +128,8 @@ namespace ft
 			void assign( size_type count, const T& _value )
 			{
 				const T value = _value;
-				this->clear();
-				this->insert(this->begin(), count, value);
+				clear();
+				insert(this->begin(), count, value);
 			}
 
 			template< class InputIt >
@@ -134,11 +137,14 @@ namespace ft
 				typename enable_if< !std::numeric_limits<InputIt>::is_specialized >::type* = 0)
 			{
 				if (first > last || std::distance(first, last) + vsize > this->max_size())
-					throw vector::LengthException();
+					{
+						this->~vector();
+						throw vector::LengthException();
+					}
 
 				vector<value_type> vv(first, last);
-				this->clear();				
-				this->insert(this->begin(), vv.begin(), vv.end());
+				clear();				
+				insert(this->begin(), vv.begin(), vv.end());
 			}
 
 			allocator_type get_allocator() const { return alloc; }
@@ -260,7 +266,7 @@ namespace ft
 					this->push_back(value);
 					return this->end();
 				}
-				if (vsize == csize) reserve(2 * vsize);
+				if (vsize == csize) reserve(2 * csize);
 				
 				pos = iterator(array + i);
 				std::copy_backward(pos, this->end(), this->end() + 1);
@@ -274,8 +280,8 @@ namespace ft
 				size_type dist = pos - this->begin();
 				const T value = _value;
 
-				if (2 * vsize < count + vsize) reserve(count + vsize);
-				else if (csize < count + vsize) reserve(2 * vsize);
+				if (2 * csize < count + vsize) reserve(count + vsize);
+				else if (csize < count + vsize) reserve(2 * csize);
 
 				pos = iterator(array + dist);
 				std::copy_backward(pos, this->end(), this->end() + count);
@@ -437,7 +443,7 @@ namespace ft
 			size_type			csize; // size alocated memory		
 	};
 
-	template< class T1, class Alloc1, class T2, class Alloc2>
+	template< class T, class Alloc>
 	bool operator==( const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs )
 	{
 		return (lhs.size() == rhs.size() 
@@ -477,4 +483,11 @@ namespace ft
 
 	template< class T, class Alloc >
 	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) { lhs.swap(rhs); }
+}
+
+namespace std{
+	template< class T, class Alloc >
+	void swap(ft::vector<T, Alloc>& lhs, ft::vector<T, Alloc>& rhs){
+		lhs.swap(rhs);
+	}
 }

@@ -526,17 +526,16 @@ void small_stuff_test() {
 
     test_announce("swap test");
 
-    action_announce("swap full and small");
+    action_announce("before swap");
+    small_testy.reserve(52);
+    show_vector_info(testy);
+    show_vector_info(small_testy);
+
+    action_announce("after swap");
     testy.swap(small_testy);
     show_vector_info(testy);
     show_vector_info(small_testy);
 
-    action_announce("swap again with swap(x, y)");
-    ft::swap(testy, small_testy);
-    show_vector_info(testy);
-    show_vector_info(small_testy);
-
-    action_announce("swap again with std swap");
     std::swap(testy, small_testy);
     show_vector_info(testy);
     show_vector_info(small_testy);
@@ -740,7 +739,7 @@ void erase_test() {
     show_vector_info(testy);
 
     action_announce("erase the end from above");
-    std::cout << "return value: " << testy.erase(testy.end() - 1)->some_ << std::endl;
+    std::cout << "return value: " << testy.erase(testy.end() - 3)->some_ << std::endl;
     show_vector_info(testy);
 
     action_announce("erase from the 10th element of above");
@@ -754,7 +753,7 @@ void erase_test() {
     show_vector_info(testy);
 
     action_announce("erase full range from above");
-    std::cout << "return value: " << testy.erase(testy.begin(), testy.end())->some_ << std::endl;
+    std::cout << "return value: " << testy.erase(testy.begin(), testy.end() - 2)->some_ << std::endl;
     show_vector_info(testy);
 }
 

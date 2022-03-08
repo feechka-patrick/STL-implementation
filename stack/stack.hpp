@@ -50,7 +50,7 @@ namespace ft{
 
 		container_type get_container() const { return this->c; }
 
-		private:
+		protected:
 			container_type c;
 
 	};

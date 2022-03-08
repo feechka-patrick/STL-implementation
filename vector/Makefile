@@ -1,5 +1,5 @@
 CC = clang++
-FLAGS = -Wall -Wextra -Werror -g
+FLAGS = -Wall -Wextra -Werror
 FLAGS_STD = -std=c++98
 OBJ_NAME = vector_test
 DIR_TEST = tests
@@ -21,8 +21,15 @@ test:
 	rm ./$(DIR_TEST)/my.output ./$(DIR_TEST)/orig.output
 
 mytest:
-	clang++ namor_vector_test.cpp -D lib=ft; ./a.out > my.output;
-	clang++ namor_vector_test.cpp -D lib=std; ./a.out > std.output;
+	clang++  $(FLAGS) $(FLAGS_STD) namor_vector_test.cpp -D lib=ft; ./a.out > my.output;
+	clang++  $(FLAGS) $(FLAGS_STD) namor_vector_test.cpp -D lib=std; ./a.out > std.output;
 	diff -y std.output my.output > result.diff; cat result.diff
+	rm std.output my.output
+
+leaks:
+	clang++ -g namor_vector_test.cpp -D lib=ft
+	valgrind ./a.out --leak-check=full --track-origins=yes
+	rm a.out
+
 fclean:
 	rm result.diff

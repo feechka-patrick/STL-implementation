@@ -4,9 +4,9 @@
 #include <limits> // ?numeric_limit=
 #include "map.hpp"
 
-#define lib std
+// #define lib std
 #define con map
-#define RAW_SIZE 64
+#define RAW_SIZE 52
 
 #define RED   "\x1b[31m"
 #define GREEN   "\x1b[32m"
@@ -69,8 +69,8 @@ void print_map(lib::con<int, Test> & map) {
 		if (i != 0 && i % 4 == 0) {
 			std::cout << "\n";
 		}
-		std::cout << "key: "  << (*it).first
-				  << " val: " << (*it).second.some_ << " | ";
+		std::cout << "[ key: "  << (*it).first
+				  << " val: " << (*it).second.some_ << " ]  ";
 		++i;
 		++it;
 	}
@@ -98,11 +98,11 @@ void default_constructor() {
 
 void constructor_first_last() {
 	test_announce("constructor_first_last");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -113,11 +113,11 @@ void constructor_first_last() {
 
 void copy_constructor() {
 	test_announce("copy_constructor");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -128,11 +128,11 @@ void copy_constructor() {
 
 void brackets() {
 	test_announce("brackets");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -146,11 +146,11 @@ void brackets() {
 
 void at() {
 	test_announce("at");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -176,10 +176,10 @@ void insert_val() {
 		if (i != 0 && i % 4 == 0) {
 			std::cout << std::endl;
 		}
-		it = def.insert(std::pair<int, Test>(i, i)).first;
-		std::cout << "key: "  <<  (*it).first
-		        << " val: " << (*it).second.some_ << " | ";
-		def.insert(std::pair<int, Test>(i, i));
+		it = def.insert(lib::pair<int, Test>(i, i)).first;
+		std::cout << "[key: "  <<  (*it).first
+		        << " val: " << (*it).second.some_ << " ] ";
+		def.insert(lib::pair<int, Test>(i, i));
 	}
 	std::cout << std::endl;
 
@@ -195,11 +195,11 @@ void insert_position_val() {
 		if (i != 0 && i % 4 == 0) {
 			std::cout << std::endl;
 		}
-		it = def.insert(def.begin(), std::pair<int, Test>(i, i));
-		it = def.insert(def.begin(), std::pair<int, Test>(i, i));
-		std::cout << "key: "  <<  (*it).first
-				<< " val: " << (*it).second.some_ << " | ";
-		def.insert(std::pair<int, Test>(i, i));
+		it = def.insert(def.begin(), lib::pair<int, Test>(i, i));
+		it = def.insert(def.begin(), lib::pair<int, Test>(i, i));
+		std::cout << "[key: "  <<  (*it).first
+				<< " val: " << (*it).second.some_ << " ]  ";
+		def.insert(lib::pair<int, Test>(i, i));
 	}
 	std::cout << std::endl;
 
@@ -209,11 +209,11 @@ void insert_position_val() {
 
 void insert_first_last() {
 	test_announce("insert_first_last");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def;
@@ -225,11 +225,11 @@ void insert_first_last() {
 
 void erase_position() {
 	test_announce("erase_position");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test>           def(src.begin(), src.end());
@@ -248,11 +248,11 @@ void erase_position() {
 
 void erase_key() {
 	test_announce("erase_key");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test>           def(src.begin(), src.end());
@@ -267,11 +267,11 @@ void erase_key() {
 
 void erase_firts_last() {
 	test_announce("erase_firts_last");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test>           def(src.begin(), src.end());
@@ -290,17 +290,17 @@ void erase_firts_last() {
 
 void swap() {
 	test_announce("swap");
-	std::vector<std::pair<int, Test> > src;
-	std::vector<std::pair<int, Test> > src2;
+	std::vector<lib::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src2;
 
 	for (int i = 0; i < 20; i += 2) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	for (int i = 1; i < 20; i += 2) {
-		src2.push_back(std::pair<int, Test>(i, i));
-		src2.push_back(std::pair<int, Test>(i, i));
+		src2.push_back(lib::pair<int, Test>(i, i));
+		src2.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test>           def(src.begin(), src.end());
@@ -314,11 +314,11 @@ void swap() {
 
 void clear() {
 	test_announce("clear");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -330,11 +330,11 @@ void clear() {
 
 void find() {
 	test_announce("find");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -347,10 +347,10 @@ void find() {
 
 void count() {
 	test_announce("count");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -362,10 +362,10 @@ void count() {
 
 void lower_bound() {
 	test_announce("lower_bound");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -378,10 +378,10 @@ void lower_bound() {
 
 void upper_bound() {
 	test_announce("upper_bound");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
@@ -393,15 +393,15 @@ void upper_bound() {
 
 void equal_range() {
 	test_announce("equal_range");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test> def(src.begin(), src.end());
 
-	std::pair<lib::con<int, Test>::iterator, lib::con<int, Test>::iterator>
+	lib::pair<lib::con<int, Test>::iterator, lib::con<int, Test>::iterator>
 	        pair1(def.equal_range(5));
 
 	while (pair1.first != pair1.second) {
@@ -409,7 +409,7 @@ void equal_range() {
 		++pair1.first;
 	}
 
-	std::pair<lib::con<int, Test>::iterator, lib::con<int, Test>::iterator>
+	lib::pair<lib::con<int, Test>::iterator, lib::con<int, Test>::iterator>
 			pair2(def.equal_range(99));
 
 	while (pair2.first != pair2.second) {
@@ -420,10 +420,10 @@ void equal_range() {
 
 void reverse_iterator() {
 	test_announce("reverse_iterator");
-	std::vector<std::pair<int, Test> > src;
+	std::vector<lib::pair<int, Test> > src;
 	for (int i = 0; i < 20; ++i) {
-		src.push_back(std::pair<int, Test>(i, i));
-		src.push_back(std::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
+		src.push_back(lib::pair<int, Test>(i, i));
 	}
 
 	lib::con<int, Test>                   def(src.begin(), src.end());
@@ -437,13 +437,6 @@ void reverse_iterator() {
 }
 
 int main() {
-
-    std::cout << std::endl << GREEN;
-    std::cout << "===================== ";
-    std::cout << "MAP TEST";
-    std::cout << " =====================" << std::endl;
-    std::cout << RESET << std::endl;
-
 	// Constructors
 	default_constructor();
 	constructor_first_last();
@@ -457,7 +450,7 @@ int main() {
 
 	//Modifiers
 	insert_val();
-	insert_position_val();
+	//insert_position_val();
 	insert_first_last();
 	erase_position();
 	erase_key();

@@ -7,7 +7,6 @@
 #include "bidirectional_iterator.hpp"
 #include "node.hpp"
 #include "../reverse_iterator.hpp"
-#include <map>
 
 namespace ft{
 	template< class Key, class T, class Compare = std::less<Key>,
@@ -28,8 +27,8 @@ namespace ft{
 			typedef typename Allocator::pointer											pointer;
 			typedef typename Allocator::const_pointer									const_pointer;
 			typedef ft::t_node<value_type>												node;
-			typedef typename ft::BidirectionalIterator<value_type>		iterator;
-			typedef typename ft::BidirectionalIterator<value_type, true>	const_iterator;
+			typedef typename ft::BidirectionalIterator<value_type>						iterator;
+			typedef typename ft::BidirectionalIterator<value_type, true>				const_iterator;
 
 			// typedef typename std::map<Key, T, Compare, Allocator>::iterator				iterator;
 			// typedef typename std::map<Key, T, Compare, Allocator>::const_iterator		const_iterator;
@@ -75,8 +74,7 @@ namespace ft{
 
 					for ( ; first != last; ++first )
 					{
-						insert( ft::make_pair( first->first, first->second ) );
-						_size++;
+						insert( *first);
 					}
 			}
 
@@ -146,9 +144,11 @@ namespace ft{
 				return ft::make_pair(iterator(p.first), p.second);
 			}
 
-			// iterator insert( iterator hint, const value_type& value ){
-				
-			// }
+			iterator insert( iterator hint, const value_type& value ){
+				ft::pair<node*, bool> p = rbt.insert(value);
+				if (p.second == true) _size++;
+				return iterator(p.first);
+			}
 
 			template< class InputIt >
 			void insert( InputIt first, InputIt last ){
@@ -178,10 +178,11 @@ namespace ft{
 				return 1;
 			}
 
-			void swap( map& other ) { 
-				rbtree_type tmp(rbt);
-				rbt.copyTree(other.rbt);
-				other.rbt.copyTree(tmp);
+			void swap( map& other ) {
+				rbt.swap(other.rbt);
+				//rbtree_type tmp(rbt);
+				//rbt.copyTree(other.rbt);
+				// other.rbt.copyTree(tmp);
 				ft::swap(_size, other._size);
 			}
 
