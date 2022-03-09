@@ -79,12 +79,12 @@ namespace ft
 			vector( const vector& other ) :  alloc(other.alloc) , vsize(0), csize(0)
 			{
 				try{
-					array = alloc.allocate(other.csize);
+					array = alloc.allocate(other.vsize);
 				}
 				catch(const std::exception& e){
 					throw vector::MemoryException();
 				}
-				csize = other.csize;
+				csize = other.vsize;
 				vsize = other.vsize;
 				for (size_type i = 0; i < vsize; ++i) {
 					alloc.construct(array + i, other[i]);
@@ -336,7 +336,7 @@ namespace ft
 				memmove(
 					array + dist,
 					array + dist + 1,
-					sizeof(value_type) * (vsize - dist)
+					sizeof(value_type) * (vsize - dist - 1)
 				);
 				vsize--;
 				return pos;

@@ -7,9 +7,9 @@
 	#include <vector>
 	namespace ft = std;
 #else
-	#include "map.hpp"
-	#include "stack.hpp"
-	#include "vector.hpp"
+	#include "map/map.hpp"
+	#include "stack/stack.hpp"
+	#include "vector/vector.hpp"
 #endif
 
 #include <stdlib.h>
@@ -114,3 +114,5 @@ int main(int argc, char** argv) {
 	std::cout << std::endl;
 	return (0);
 }
+
+//clang++ -Wall -Wextra -Werror -std=c++98 -g main.cpp; ./a.out 123

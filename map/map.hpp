@@ -145,6 +145,7 @@ namespace ft{
 			}
 
 			iterator insert( iterator hint, const value_type& value ){
+				(iterator)hint;
 				ft::pair<node*, bool> p = rbt.insert(value);
 				if (p.second == true) _size++;
 				return iterator(p.first);
